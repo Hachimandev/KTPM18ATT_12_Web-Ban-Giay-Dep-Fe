@@ -1,21 +1,21 @@
 // src/components/home/CategorySection.jsx
 import { Link } from 'react-router-dom';
+import depSandalImg from '../../assets/image/dep-sandal.png';
 import giayNamImg from '../../assets/image/giaynam.png';
 import giayNuImg from '../../assets/image/giaynu.png';
-import depSandalImg from '../../assets/image/dep-sandal.png';
 
 const categories = [
     {
         name: 'Giày Nam',
         desc: 'Bộ sưu tập giày nam thời trang',
         img: giayNamImg,
-        href: '/nam'
+        href: '/giay-nam'
     },
     {
         name: 'Giày Nữ',
         desc: 'Giày nữ cao cấp, phong cách',
         img: giayNuImg,
-        href: '/nu'
+        href: '/giay-nu'
     },
     {
         name: 'Dép & Sandal',

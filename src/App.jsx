@@ -1,20 +1,21 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
-import CustomerLayout from "./components/layout/CustomerLayout.jsx";
 import AdminLayout from "./components/layout/AdminLayout.jsx";
+import CustomerLayout from "./components/layout/CustomerLayout.jsx";
 
-import HomePage from "./pages/HomePage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
-import DashboardPage from "./pages/admin/DashboardPage.jsx";
-import ProductsPage from "./pages/admin/ProductsPage.jsx";
-import StaffPage from "./pages/admin/StaffPage.jsx";
-import RegisterPage from "./pages/RegisterPage.jsx";
 import CustomerPage from "./pages/admin/CustomerPage.jsx";
-import SupplierPage from "./pages/admin/SupplierPage.jsx";
+import DashboardPage from "./pages/admin/DashboardPage.jsx";
 import DiscountPage from "./pages/admin/DiscountPage.jsx";
 import OrderPage from "./pages/admin/OrderPage.jsx";
-
+import ProductsPage from "./pages/admin/ProductsPage.jsx";
+import StaffPage from "./pages/admin/StaffPage.jsx";
+import SupplierPage from "./pages/admin/SupplierPage.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import ProductDetail from "./pages/ProductDetailPage.jsx";
+import ProductListPage from "./pages/ProductListPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
 function App() {
   return (
     <Routes>
@@ -22,6 +23,11 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/giay-nam" element={<ProductListPage category="men" />} />
+        <Route path="/giay-nu" element={<ProductListPage category="women" />} />
+        <Route path="/dep" element={<ProductListPage category="sandals" />} />
+        <Route path="/khuyen-mai" element={<ProductListPage category="sale" />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
       </Route>
 
       <Route

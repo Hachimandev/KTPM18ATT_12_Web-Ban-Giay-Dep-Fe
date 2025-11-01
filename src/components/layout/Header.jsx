@@ -1,14 +1,14 @@
 // src/components/layout/Header.jsx
 import { useState } from 'react';
-import { FiSearch, FiShoppingCart, FiMenu, FiX } from 'react-icons/fi';
+import { FiMenu, FiSearch, FiShoppingCart, FiX } from 'react-icons/fi';
 import { Link, NavLink } from 'react-router-dom'; // <-- Dùng Link và NavLink
 
 const Header = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const navLinks = [
-        { name: 'Giày Nam', href: '/nam' },
-        { name: 'Giày Nữ', href: '/nu' },
+        { name: 'Giày Nam', href: '/giay-nam' },
+        { name: 'Giày Nữ', href: '/giay-nu' },
         { name: 'Dép', href: '/dep' },
         { name: 'Khuyến Mãi', href: '/khuyen-mai', special: true },
     ];
