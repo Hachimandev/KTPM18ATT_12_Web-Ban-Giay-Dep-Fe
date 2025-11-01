@@ -22,7 +22,7 @@ const HeroSection = () => {
                         </Link>
 
                         <Link
-                            to="/nam"
+                            to="/giay-nam"
                             className="border border-gray-400 text-white px-6 py-3 rounded-md font-semibold hover:border-brand-orange hover:text-brand-orange hover:scale-105 transition-all duration-300"
                         >
                             Xem Thêm
