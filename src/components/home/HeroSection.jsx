@@ -15,14 +15,14 @@ const HeroSection = () => {
                     </p>
                     <div className="flex space-x-4">
                         <Link
-                            to="/khuyen-mai"
+                            to="/products/khuyen-mai"
                             className="bg-orange-500 text-white px-6 py-3 rounded-md font-semibold hover:scale-105 transition-all duration-300"
                         >
                             Mua Ngay
                         </Link>
 
                         <Link
-                            to="/giay-nam"
+                            to="/products/giay-nam"
                             className="border border-gray-400 text-white px-6 py-3 rounded-md font-semibold hover:border-brand-orange hover:text-brand-orange hover:scale-105 transition-all duration-300"
                         >
                             Xem Thêm

@@ -23,10 +23,13 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/giay-nam" element={<ProductListPage category="men" />} />
-        <Route path="/giay-nu" element={<ProductListPage category="women" />} />
-        <Route path="/dep" element={<ProductListPage category="sandals" />} />
-        <Route path="/khuyen-mai" element={<ProductListPage category="sale" />} />
+
+        {/* <Route path="/products/:category" element={<ProductListPage />} /> */}
+        <Route path="/search" element={<ProductListPage category="all" />} />
+        <Route path="/products/giay-nam" element={<ProductListPage category="men" />} />
+        <Route path="/products/giay-nu" element={<ProductListPage category="women" />} />
+        <Route path="/products/dep" element={<ProductListPage category="sandals" />} />
+        <Route path="/products/khuyen-mai" element={<ProductListPage category="sale" />} />
         <Route path="/products/:id" element={<ProductDetail />} />
       </Route>
 

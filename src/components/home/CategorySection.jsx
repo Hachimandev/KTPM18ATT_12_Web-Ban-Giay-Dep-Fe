@@ -9,19 +9,19 @@ const categories = [
         name: 'Giày Nam',
         desc: 'Bộ sưu tập giày nam thời trang',
         img: giayNamImg,
-        href: '/giay-nam'
+        href: '/products/giay-nam'
     },
     {
         name: 'Giày Nữ',
         desc: 'Giày nữ cao cấp, phong cách',
         img: giayNuImg,
-        href: '/giay-nu'
+        href: '/products/giay-nu'
     },
     {
         name: 'Dép & Sandal',
         desc: 'Dép thời trang, thoải mái',
         img: depSandalImg,
-        href: '/dep'
+        href: '/products/dep'
     },
 ];
 
