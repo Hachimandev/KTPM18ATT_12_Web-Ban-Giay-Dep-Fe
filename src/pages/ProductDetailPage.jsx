@@ -2,6 +2,7 @@ import { Heart, ShoppingCart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { get } from "../api/api";
+import { useCart } from "../contexts/CartContext";
 import productImageMap from "../constants/productImages";
 
 export default function ProductDetail() {
@@ -14,6 +15,37 @@ export default function ProductDetail() {
   const [color, setColor] = useState(null);
   const [qty, setQty] = useState(1);
   const [stock, setStock] = useState(0);
+
+  const { addItem } = useCart();
+
+  // thêm sản phẩm vào giỏ hàng
+  const handleAddToCart = () => {
+    if (!size || !color) {
+      alert("Vui lòng chọn kích thước và màu sắc");
+      return;
+    }
+    const selectedDetail = productDetails.find(
+      (d) => d.size === size && d.mau === color
+    );
+    if (!selectedDetail || selectedDetail.soLuongTonKho === 0) {
+      alert("Sản phẩm đã hết hàng");
+      return;
+    }
+
+    addItem(
+      {
+        maChiTiet: selectedDetail.maChiTiet,
+        tenSanPham: product.tenSanPham,
+        giaBan: product.giaBan,
+        soLuongTonKho: selectedDetail.soLuongTonKho,
+      },
+      qty,
+      size,
+      color
+    );
+
+    alert("Đã thêm vào giỏ hàng");
+  };
 
   // --- Lấy sản phẩm ---
   useEffect(() => {
@@ -199,6 +231,7 @@ export default function ProductDetail() {
           {/* --- Buttons --- */}
           <button
             className="w-full bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-xl flex items-center justify-center gap-2 mb-3"
+            onClick={handleAddToCart}
             disabled={stock === 0}
           >
             <ShoppingCart size={20} /> Thêm vào giỏ hàng

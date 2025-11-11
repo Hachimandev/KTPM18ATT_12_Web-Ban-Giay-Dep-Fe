@@ -18,6 +18,7 @@ import ProductListPage from "./pages/ProductListPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import AccountPage from "./components/layout/AccountPage.jsx";
 import UpdateAccountPage from "./pages/UpdateAccountPage.jsx";
+import CartPage from "./pages/CartPage.jsx";
 function App() {
   return (
     <Routes>
@@ -62,6 +63,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/cart" element={<CartPage />} />
       </Route>
       <Route
         path="/admin"
