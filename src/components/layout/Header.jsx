@@ -3,12 +3,14 @@ import { useState } from "react";
 import { FiMenu, FiSearch, FiShoppingCart, FiX } from "react-icons/fi";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
+import { useCart } from "../../contexts/CartContext.jsx";
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const username = localStorage.getItem("username");
+  const { cart } = useCart();
 
   const navLinks = [
     { name: "Giày Nam", href: "/products/giay-nam" },
@@ -81,7 +83,7 @@ const Header = () => {
           >
             <FiShoppingCart size={24} />
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              0
+              {cart.items.reduce((total, item) => total + item.soLuong, 0)}
             </span>
           </Link>
           {token ? (
