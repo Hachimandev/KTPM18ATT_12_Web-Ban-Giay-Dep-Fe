@@ -16,6 +16,8 @@ import LoginPage from "./pages/LoginPage.jsx";
 import ProductDetail from "./pages/ProductDetailPage.jsx";
 import ProductListPage from "./pages/ProductListPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
+import AccountPage from "./components/layout/AccountPage.jsx";
+import UpdateAccountPage from "./pages/UpdateAccountPage.jsx";
 function App() {
   return (
     <Routes>
@@ -26,13 +28,41 @@ function App() {
 
         {/* <Route path="/products/:category" element={<ProductListPage />} /> */}
         <Route path="/search" element={<ProductListPage category="all" />} />
-        <Route path="/products/giay-nam" element={<ProductListPage category="men" />} />
-        <Route path="/products/giay-nu" element={<ProductListPage category="women" />} />
-        <Route path="/products/dep" element={<ProductListPage category="sandals" />} />
-        <Route path="/products/khuyen-mai" element={<ProductListPage category="sale" />} />
+        <Route
+          path="/products/giay-nam"
+          element={<ProductListPage category="men" />}
+        />
+        <Route
+          path="/products/giay-nu"
+          element={<ProductListPage category="women" />}
+        />
+        <Route
+          path="/products/dep"
+          element={<ProductListPage category="sandals" />}
+        />
+        <Route
+          path="/products/khuyen-mai"
+          element={<ProductListPage category="sale" />}
+        />
         <Route path="/product/:id" element={<ProductDetail />} />
-      </Route>
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute roleRequired="USER">
+              <AccountPage />
+            </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/account/update"
+          element={
+            <ProtectedRoute roleRequired="USER">
+              <UpdateAccountPage />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
       <Route
         path="/admin"
         element={
