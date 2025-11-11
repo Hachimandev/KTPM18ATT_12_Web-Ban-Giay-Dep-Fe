@@ -82,6 +82,7 @@ const RegisterPage = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          fullName: formData.fullName,
           username: formData.username,
           email: formData.email,
           password: formData.password,
