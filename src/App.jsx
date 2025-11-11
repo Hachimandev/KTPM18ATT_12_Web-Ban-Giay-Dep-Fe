@@ -30,7 +30,7 @@ function App() {
         <Route path="/products/giay-nu" element={<ProductListPage category="women" />} />
         <Route path="/products/dep" element={<ProductListPage category="sandals" />} />
         <Route path="/products/khuyen-mai" element={<ProductListPage category="sale" />} />
-        <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
       </Route>
 
       <Route

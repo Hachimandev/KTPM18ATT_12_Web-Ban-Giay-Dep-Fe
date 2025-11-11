@@ -1,59 +1,54 @@
-// src/pages/HomePage.jsx
-
-import HeroSection from '../components/home/HeroSection.jsx';
-import CategorySection from '../components/home/CategorySection.jsx';
-import ProductList from '../components/home/ProductList.jsx';
-import SpecialOffer from '../components/home/SpecialOffer.jsx';
-import Newsletter from '../components/home/Newsletter.jsx';
-import sneakerImg from '../assets/image/giay-sneaker-trang.png';
-import bootImg from '../assets/image/giay-boot-da.png';
-import caoGotImg from '../assets/image/giay-caogot.png';
-import luoiImg from '../assets/image/giay-luoi.png';
-
-import chayBoImg from '../assets/image/giay-chay-bo.png';
-import canvasImg from '../assets/image/giay-canvas.png';
-import oxford from '../assets/image/giay-oxford.png';
-
-const featuredProducts = [
-    {
-        id: 1,
-        img: sneakerImg,
-        name: 'Giày Sneaker Trắng',
-        desc: 'Giày thể thao thời trang',
-        price: '899,000đ',
-    },
-    {
-        id: 2,
-        img: bootImg,
-        name: 'Giày Boot Da',
-        desc: 'Giày boot da cao cấp',
-        price: '1,299,000đ',
-    },
-    {
-        id: 3,
-        img: caoGotImg,
-        name: 'Giày Cao Gót',
-        desc: 'Giày cao gót thanh lịch',
-        price: '799,000đ',
-    },
-    {
-        id: 4,
-        img: luoiImg,
-        name: 'Giày Lười',
-        desc: 'Giày lười thời trang',
-        price: '699,000đ',
-    },
-];
-
-
-const bestSellingProducts = [
-    { id: 5, img: chayBoImg, name: 'Giày Chạy Bộ', desc: 'Giày thể thao chuyên nghiệp', price: '1,199,000đ', rating: 4.8, reviews: 128 },
-    { id: 6, img: canvasImg, name: 'Giày Canvas', desc: 'Giày vải thời trang trẻ trung', price: '599,000đ', rating: 4.6, reviews: 89 },
-    { id: 7, img: oxford, name: 'Giày Oxford', desc: 'Giày công sở lịch lãm', price: '1,499,000đ', rating: 4.9, reviews: 156 },
-];
-// --------------------
+import { useEffect, useState } from "react";
+import HeroSection from "../components/home/HeroSection.jsx";
+import CategorySection from "../components/home/CategorySection.jsx";
+import ProductList from "../components/home/ProductList.jsx";
+import SpecialOffer from "../components/home/SpecialOffer.jsx";
+import Newsletter from "../components/home/Newsletter.jsx";
 
 const HomePage = () => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const res = await fetch("http://localhost:8085/api/products");
+                if (!res.ok) throw new Error("Không thể tải sản phẩm");
+                const data = await res.json();
+                setProducts(data);
+            } catch (err) {
+                console.error("Lỗi khi gọi API:", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="text-center py-10 text-gray-500 text-lg">
+                Đang tải sản phẩm...
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center py-10 text-red-500 text-lg">
+                Lỗi: {error}
+            </div>
+        );
+    }
+
+    const featuredProducts = products.slice(0, 4);
+    const bestSellingProducts = [...products]
+        .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+        .slice(0, 4);
+
     return (
         <>
             <HeroSection />
