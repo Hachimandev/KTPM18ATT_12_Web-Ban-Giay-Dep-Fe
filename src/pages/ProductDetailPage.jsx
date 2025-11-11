@@ -2,7 +2,7 @@ import { Heart, ShoppingCart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import productImageMap from "../constants/productImages";
-import { get } from "../api/api"; // hàm GET bạn đã viết
+import { get } from "../api/api";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -13,7 +13,6 @@ export default function ProductDetail() {
   const [color, setColor] = useState(null);
   const [qty, setQty] = useState(1);
 
-  // Fetch chi tiết sản phẩm
   useEffect(() => {
     async function fetchProduct() {
       try {
@@ -28,7 +27,6 @@ export default function ProductDetail() {
     fetchProduct();
   }, [id]);
 
-  // Fetch sản phẩm liên quan
   useEffect(() => {
     async function fetchRelated() {
       if (!product) return;
@@ -40,7 +38,6 @@ export default function ProductDetail() {
             p.maSanPham !== product.maSanPham
         );
 
-        // Nếu không có cùng loại → random 4 sản phẩm khác
         const fallback =
           related.length > 0
             ? related
@@ -51,7 +48,7 @@ export default function ProductDetail() {
 
         setRelatedProducts(fallback.slice(0, 4));
       } catch (error) {
-        console.error("❌ Lỗi khi lấy sản phẩm liên quan:", error);
+        console.error("Lỗi khi lấy sản phẩm liên quan:", error);
       }
     }
 
@@ -61,12 +58,10 @@ export default function ProductDetail() {
   if (loading) return <div className="p-4">Đang tải...</div>;
   if (!product) return <div className="p-4">Sản phẩm không tồn tại.</div>;
 
-  // Ảnh chính
   const mainImg =
     productImageMap[product.hinhAnh] ||
     "https://placehold.co/400x400?text=No+Image";
 
-  // Size và màu từ chi tiết sản phẩm
   const sizes =
     product.chiTietSanPhams?.map((ct) => ct.size) || [38, 39, 40, 41, 42, 43];
   const colors =

@@ -17,7 +17,7 @@ const ProductList = ({ title, products, cardType }) => {
                 <div className={`grid ${gridCols} gap-8`}>
                     {products.map((product) => (
                         <ProductCard
-                            key={product.id}
+                            key={product.id || product.maSanPham}
                             product={product}
                             type={cardType}
                         />

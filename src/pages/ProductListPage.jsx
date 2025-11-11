@@ -202,7 +202,7 @@ export default function ProductListPage({ category = "all" }) {
         ) : (
           <div className="grid grid-cols-3 gap-4">
             {filteredProducts.map((p) => (
-              <Link to={`/products/${p.maSanPham}`} key={p.maSanPham}>
+              <Link to={`/product/${p.maSanPham}`} key={p.maSanPham || p.maSanPham}>
                 <div className="bg-white p-3 rounded-2xl shadow hover:shadow-lg transition">
                   <div className="relative">
                     {(p.thue > 0) && (
