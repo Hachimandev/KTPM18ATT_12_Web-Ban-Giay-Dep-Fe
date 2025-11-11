@@ -10,7 +10,7 @@ const SpecialOffer = () => {
                     Giảm giá lên đến 50% cho tất cả sản phẩm. Đừng bỏ lỡ!
                 </p>
                 <Link
-                    to="/khuyen-mai"
+                    to="/products/khuyen-mai"
                     className="bg-white text-orange-600 px-8 py-3 rounded-md text-lg font-semibold hover:bg-gray-100 transition-colors"
                 >
                     Mua Ngay
