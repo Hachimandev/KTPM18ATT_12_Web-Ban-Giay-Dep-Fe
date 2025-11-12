@@ -19,6 +19,8 @@ import RegisterPage from "./pages/RegisterPage.jsx";
 import AccountPage from "./components/layout/AccountPage.jsx";
 import UpdateAccountPage from "./pages/UpdateAccountPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
+import CheckoutPage from "./pages/CheckoutPage.jsx";
+import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
 function App() {
   return (
     <Routes>
@@ -65,6 +67,16 @@ function App() {
         />
 
         <Route path="/cart" element={<CartPage />} />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute roleRequired="USER">
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
       </Route>
       <Route
         path="/admin"

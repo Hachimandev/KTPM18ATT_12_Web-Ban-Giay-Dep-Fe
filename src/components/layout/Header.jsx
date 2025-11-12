@@ -42,16 +42,14 @@ const Header = () => {
               to={link.href}
               className={({ isActive }) => `
                                 pb-1
-                                ${
-                                  isActive
-                                    ? "text-orange-500 border-b-2 border-orange-500"
-                                    : "text-gray-600 hover:text-orange-500"
-                                }
-                                ${
-                                  link.special
-                                    ? "text-red-500 font-semibold"
-                                    : ""
-                                }
+                                ${isActive
+                  ? "text-orange-500 border-b-2 border-orange-500"
+                  : "text-gray-600 hover:text-orange-500"
+                }
+                                ${link.special
+                  ? "text-red-500 font-semibold"
+                  : ""
+                }
                             `}
             >
               {link.name}
@@ -83,7 +81,7 @@ const Header = () => {
           >
             <FiShoppingCart size={24} />
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              {cart.items.reduce((total, item) => total + item.soLuong, 0)}
+              {cart.items.length}
             </span>
           </Link>
           {token ? (
@@ -147,16 +145,14 @@ const Header = () => {
                 to={link.href}
                 className={({ isActive }) => `
                                     p-2 rounded
-                                    ${
-                                      isActive
-                                        ? "bg-orange-100 text-orange-500"
-                                        : "text-gray-700"
-                                    }
-                                    ${
-                                      link.special
-                                        ? "text-red-500 font-semibold"
-                                        : ""
-                                    }
+                                    ${isActive
+                    ? "bg-orange-100 text-orange-500"
+                    : "text-gray-700"
+                  }
+                                    ${link.special
+                    ? "text-red-500 font-semibold"
+                    : ""
+                  }
                                 `}
                 onClick={() => setIsMobileMenuOpen(false)}
               >

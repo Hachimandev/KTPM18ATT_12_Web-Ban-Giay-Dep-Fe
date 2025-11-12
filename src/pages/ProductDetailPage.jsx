@@ -38,6 +38,7 @@ export default function ProductDetail() {
         tenSanPham: product.tenSanPham,
         giaBan: product.giaBan,
         soLuongTonKho: selectedDetail.soLuongTonKho,
+        hinhAnh: product.hinhAnh,
       },
       qty,
       size,
@@ -113,9 +114,9 @@ export default function ProductDetail() {
           related.length > 0
             ? related
             : data
-                .filter((p) => p.maSanPham !== product.maSanPham)
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 4);
+              .filter((p) => p.maSanPham !== product.maSanPham)
+              .sort(() => Math.random() - 0.5)
+              .slice(0, 4);
 
         setRelatedProducts(fallback.slice(0, 4));
       } catch (error) {
@@ -175,9 +176,8 @@ export default function ProductDetail() {
                   <button
                     key={s}
                     onClick={() => setSize(s)}
-                    className={`px-4 py-2 rounded-lg border ${
-                      size === s ? "border-black font-bold" : "text-gray-600"
-                    }`}
+                    className={`px-4 py-2 rounded-lg border ${size === s ? "border-black font-bold" : "text-gray-600"
+                      }`}
                   >
                     {s}
                   </button>
@@ -195,9 +195,8 @@ export default function ProductDetail() {
                   <button
                     key={c}
                     onClick={() => setColor(c)}
-                    className={`w-7 h-7 rounded-full border-2 ${
-                      color === c ? "border-black" : "border-gray-300"
-                    }`}
+                    className={`w-7 h-7 rounded-full border-2 ${color === c ? "border-black" : "border-gray-300"
+                      }`}
                     style={{ backgroundColor: c }}
                   />
                 ))}
