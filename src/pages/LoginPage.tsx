@@ -13,6 +13,7 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import shop from "../assets/image/shop.png";
+import { useCart } from "../contexts/CartContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setUsername: setCartUsername, setCart } = useCart();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,10 +31,7 @@ const LoginPage = () => {
       const res = await fetch("http://localhost:8085/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!res.ok) {
@@ -46,15 +45,15 @@ const LoginPage = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("username", data.username);
       localStorage.setItem("roles", JSON.stringify(data.roles || []));
-      console.log(data);
 
+      // --- quan trọng: cập nhật username cho CartProvider ---
+      setCartUsername(data.username);
+      const saved = localStorage.getItem(`cart_${data.username}`);
+      if (saved) setCart(JSON.parse(saved));
+      else setCart({ items: [], maKhuyenMai: null, diemSuDung: 0 });
       alert("Đăng nhập thành công!");
-
-      if (data.roles && data.roles.includes("ROLE_ADMIN")) {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
+      if (data.roles && data.roles.includes("ROLE_ADMIN")) navigate("/admin");
+      else navigate("/");
     } catch (err) {
       console.error("Login error:", err);
       alert("Có lỗi khi kết nối server!");
