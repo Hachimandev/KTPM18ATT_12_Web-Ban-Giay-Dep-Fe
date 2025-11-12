@@ -19,6 +19,7 @@ import RegisterPage from "./pages/RegisterPage.jsx";
 import AccountPage from "./components/layout/AccountPage.jsx";
 import UpdateAccountPage from "./pages/UpdateAccountPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
 function App() {
   return (
     <Routes>
@@ -65,6 +66,7 @@ function App() {
         />
 
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/contact" element={<ContactPage />} />
       </Route>
       <Route
         path="/admin"
