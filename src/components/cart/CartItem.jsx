@@ -16,8 +16,12 @@ export default function CartItem({ item }) {
         <img src={itemImg} alt={item.tenSanPham} className="w-16 h-16 object-cover rounded-md border" />
         <div>
           <p className="font-semibold text-gray-800">{item.tenSanPham}</p>
-          <p className="text-sm text-gray-500">
-            Màu {item.color} | Size {item.size}
+          <p className="text-sm text-gray-500 flex items-center gap-2">
+            Màu:
+            <span
+              className="inline-block w-4 h-4 rounded-full border border-gray-300"
+              style={{ backgroundColor: item.color }}
+            ></span> | Size: {item.size}
           </p>
           <p className="text-orange-500 font-bold text-lg">
             {(item.giaBan * item.soLuong).toLocaleString()}đ

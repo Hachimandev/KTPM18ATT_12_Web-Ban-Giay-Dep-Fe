@@ -15,9 +15,11 @@ import ShopGiayLogo from "../common/ShopGiayLogo";
 const Sidebar = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("userToken");
-    localStorage.removeItem("userInfo");
-    navigate("/login");
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("roles");
+    navigate("/");
+    window.location.reload();
   };
 
   return (
@@ -26,7 +28,6 @@ const Sidebar = () => {
         <Link to="/admin" className="text-white text-2xl font-bold">
           <ShopGiayLogo size="text-2xl" color="text-white" />
         </Link>
-        <p className="text-xs text-gray-500 mt-1">Admin Panel</p>
       </div>
 
       <nav className="flex-1 px-4 py-2 space-y-2">
