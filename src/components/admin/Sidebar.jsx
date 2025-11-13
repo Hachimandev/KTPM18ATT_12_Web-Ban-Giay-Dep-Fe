@@ -10,6 +10,7 @@ import {
   FiTruck,
   FiLogOut,
 } from "react-icons/fi";
+import ShopGiayLogo from "../common/ShopGiayLogo";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -23,10 +24,7 @@ const Sidebar = () => {
     <aside className="w-64 bg-[#0F172A] text-gray-300 flex flex-col h-screen">
       <div className="p-6 text-center">
         <Link to="/admin" className="text-white text-2xl font-bold">
-          <span className="bg-[#F97316] text-white p-2 rounded-lg mr-2">
-            SG
-          </span>
-          ShopGiay
+          <ShopGiayLogo size="text-2xl" color="text-white" />
         </Link>
         <p className="text-xs text-gray-500 mt-1">Admin Panel</p>
       </div>
