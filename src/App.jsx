@@ -1,9 +1,11 @@
+// src/App.jsx
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
 import AdminLayout from "./components/layout/AdminLayout.jsx";
 import CustomerLayout from "./components/layout/CustomerLayout.jsx";
 
+// Admin Pages
 import CustomerPage from "./pages/admin/CustomerPage.jsx";
 import DashboardPage from "./pages/admin/DashboardPage.jsx";
 import DiscountPage from "./pages/admin/DiscountPage.jsx";
@@ -11,16 +13,21 @@ import OrderPage from "./pages/admin/OrderPage.jsx";
 import ProductsPage from "./pages/admin/ProductsPage.jsx";
 import StaffPage from "./pages/admin/StaffPage.jsx";
 import SupplierPage from "./pages/admin/SupplierPage.jsx";
+
+// Customer Pages
 import HomePage from "./pages/HomePage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import ProductDetail from "./pages/ProductDetailPage.jsx";
 import ProductListPage from "./pages/ProductListPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
-import AccountPage from "./components/layout/AccountPage.jsx";
+import AccountPage from "./pages/AccountPage.jsx";
 import UpdateAccountPage from "./pages/UpdateAccountPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
+import OrderHistoryPage from "./pages/OrderHistoryPage.jsx"; // <-- IMPORT TRANG LỊCH SỬ ĐƠN HÀNG
+import OrderDetailPage from "./pages/OrderDetailPage.jsx";
+
 function App() {
   return (
     <Routes>
@@ -29,25 +36,19 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* <Route path="/products/:category" element={<ProductListPage />} /> */}
+        {/* --- Product Listing Routes --- */}
         <Route path="/search" element={<ProductListPage category="all" />} />
-        <Route
-          path="/products/giay-nam"
-          element={<ProductListPage category="men" />}
-        />
-        <Route
-          path="/products/giay-nu"
-          element={<ProductListPage category="women" />}
-        />
-        <Route
-          path="/products/dep"
-          element={<ProductListPage category="sandals" />}
-        />
-        <Route
-          path="/products/khuyen-mai"
-          element={<ProductListPage category="sale" />}
-        />
+        <Route path="/products/giay-nam" element={<ProductListPage category="men" />} />
+        <Route path="/products/giay-nu" element={<ProductListPage category="women" />} />
+        <Route path="/products/dep" element={<ProductListPage category="sandals" />} />
+        <Route path="/products/khuyen-mai" element={<ProductListPage category="sale" />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
+
+
+        {/* --- Account Routes (Protected) --- */}
         <Route
           path="/account"
           element={
@@ -56,7 +57,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/account/update"
           element={
@@ -66,7 +66,31 @@ function App() {
           }
         />
 
-        <Route path="/cart" element={<CartPage />} />
+        {/* ROUTE LỊCH SỬ ĐƠN HÀNG (Sử dụng URL parameter để lọc) */}
+        <Route
+          path="/account/orders"
+          element={
+            <ProtectedRoute roleRequired="USER">
+              <OrderHistoryPage status="all" /> {/* Mặc định: Hiển thị tất cả */}
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/account/order/:maHoaDon"
+          element={
+            <ProtectedRoute roleRequired="USER">
+              <OrderDetailPage status="all" />
+            </ProtectedRoute>
+          } />
+        <Route
+          path="/account/orders/:status" // :status sẽ là pending, shipping, cancelled, all
+          element={
+            <ProtectedRoute roleRequired="USER">
+              <OrderHistoryPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ROUTE CHECKOUT (Protected) */}
         <Route
           path="/checkout"
           element={
@@ -76,8 +100,9 @@ function App() {
           }
         />
 
-        <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
       </Route>
+
+      {/* --- Admin Routes --- */}
       <Route
         path="/admin"
         element={
@@ -89,14 +114,12 @@ function App() {
         <Route index element={<DashboardPage />} />
         <Route path="products" element={<ProductsPage />} />
         <Route path="staff" element={<StaffPage />} />
-        <Route path="staff" element={<StaffPage />} />
         <Route path="customers" element={<CustomerPage />} />
         <Route path="suppliers" element={<SupplierPage />} />
         <Route path="discounts" element={<DiscountPage />} />
         <Route path="orders" element={<OrderPage />} />
       </Route>
 
-      {/* Có thể thêm route 404 ở đây */}
       {/* <Route path="*" element={<NotFoundPage />} /> */}
     </Routes>
   );
