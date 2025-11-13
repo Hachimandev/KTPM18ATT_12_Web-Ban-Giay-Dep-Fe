@@ -4,6 +4,7 @@ import { FiMenu, FiSearch, FiShoppingCart, FiX } from "react-icons/fi";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
 import { useCart } from "../../contexts/CartContext.jsx";
+import ShopGiayLogo from "../common/ShopGiayLogo.jsx";
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,7 +33,7 @@ const Header = () => {
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link to="/" className="text-2xl font-bold text-orange-500">
-          ShopGiay
+          <ShopGiayLogo size="text-2xl" color="text-black" />
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">

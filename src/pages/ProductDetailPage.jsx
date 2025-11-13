@@ -1,12 +1,14 @@
 import { Heart, ShoppingCart } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { get } from "../api/api";
 import { useCart } from "../contexts/CartContext";
 import productImageMap from "../constants/productImages";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [productDetails, setProductDetails] = useState([]);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -18,18 +20,17 @@ export default function ProductDetail() {
 
   const { addItem } = useCart();
 
-  // thêm sản phẩm vào giỏ hàng
-  const handleAddToCart = () => {
+  const processAddToCart = (shouldNavigate = false) => {
     if (!size || !color) {
-      alert("Vui lòng chọn kích thước và màu sắc");
-      return;
+      toast.error("Vui lòng chọn Kích thước và Màu sắc.", { position: 'bottom-center' });
+      return false;
     }
-    const selectedDetail = productDetails.find(
-      (d) => d.size === size && d.mau === color
-    );
+
+    const selectedDetail = productDetails.find(d => d.size === size && d.mau === color);
+
     if (!selectedDetail || selectedDetail.soLuongTonKho === 0) {
-      alert("Sản phẩm đã hết hàng");
-      return;
+      toast.error("Sản phẩm này đã hết hàng hoặc không tồn tại.", { position: 'bottom-center' });
+      return false;
     }
 
     addItem(
@@ -39,15 +40,29 @@ export default function ProductDetail() {
         giaBan: product.giaBan,
         soLuongTonKho: selectedDetail.soLuongTonKho,
         hinhAnh: product.hinhAnh,
+        size: size,
+        mau: color,
       },
       qty,
       size,
       color
     );
 
-    alert("Đã thêm vào giỏ hàng");
+    if (!shouldNavigate) {
+      toast.success(`Đã thêm ${qty} ${product.tenSanPham} vào giỏ hàng!`, { duration: 2000, icon: '🛒' });
+    }
+
+    return true;
+  };
+  const handleAddToCart = () => {
+    processAddToCart(false);
   };
 
+  const handleBuyNow = () => {
+    if (processAddToCart(true)) {
+      navigate("/cart");
+    }
+  };
   // --- Lấy sản phẩm ---
   useEffect(() => {
     async function fetchProduct() {
@@ -67,7 +82,18 @@ export default function ProductDetail() {
       try {
         const details = await get(`/product-details/by-product/${id}`);
         setProductDetails(details);
-        console.log("Chi tiết sản phẩm:", details);
+
+        if (details.length > 0) {
+          const firstAvailable = details.find(d => d.soLuongTonKho > 0);
+          if (firstAvailable) {
+            setSize(firstAvailable.size);
+            setColor(firstAvailable.mau);
+          } else {
+            setSize(details[0].size);
+            setColor(details[0].mau);
+          }
+        }
+
       } catch (error) {
         console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
       } finally {
@@ -77,7 +103,6 @@ export default function ProductDetail() {
     fetchProductDetails();
   }, [id]);
 
-  // --- Cập nhật stock khi chọn size/color ---
   useEffect(() => {
     if (!size || !color) {
       setStock(0);
@@ -133,12 +158,12 @@ export default function ProductDetail() {
     productImageMap[product.hinhAnh] ||
     "https://placehold.co/400x400?text=No+Image";
 
-  // --- Lấy size & color từ chi tiết sản phẩm ---
   const sizes = [...new Set(productDetails.map((d) => d.size))];
   const colors = [...new Set(productDetails.map((d) => d.mau))];
 
   return (
     <div className="max-w-6xl mx-auto p-4">
+      <Toaster position="top-right" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* --- Left: Image --- */}
         <div>
@@ -231,14 +256,16 @@ export default function ProductDetail() {
           <button
             className="w-full bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-xl flex items-center justify-center gap-2 mb-3"
             onClick={handleAddToCart}
-            disabled={stock === 0}
+            disabled={!size || !color}
           >
-            <ShoppingCart size={20} /> Thêm vào giỏ hàng
+            <ShoppingCart size={20} />
+            {stock === 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
           </button>
 
           <button
             className="w-full bg-black hover:bg-gray-900 text-white px-5 py-3 rounded-xl flex items-center justify-center gap-2 mb-3"
-            disabled={stock === 0}
+            onClick={handleBuyNow}
+            disabled={stock === 0 || !size || !color}
           >
             Mua ngay
           </button>
