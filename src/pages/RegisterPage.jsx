@@ -123,10 +123,10 @@ const RegisterPage = () => {
           localStorage.setItem("roles", JSON.stringify(data.roles));
 
           alert("Đăng ký tài khoản thành công!");
-          navigate("/login");
+          navigate("/");
         } else {
           alert("Đăng ký thành công");
-          navigate("/login");
+          navigate("/");
         }
       } else {
         alert("Lỗi không xác định từ server: " + text);
