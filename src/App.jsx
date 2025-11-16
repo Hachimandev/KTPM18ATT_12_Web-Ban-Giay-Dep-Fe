@@ -1,4 +1,3 @@
-// src/App.jsx
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
@@ -13,6 +12,7 @@ import OrderPage from "./pages/admin/OrderPage.jsx";
 import ProductsPage from "./pages/admin/ProductsPage.jsx";
 import StaffPage from "./pages/admin/StaffPage.jsx";
 import SupplierPage from "./pages/admin/SupplierPage.jsx";
+import ShopInformationManaging from "./pages/admin/ShopInformationManaging.jsx";
 
 // Customer Pages
 import HomePage from "./pages/HomePage.jsx";
@@ -25,8 +25,11 @@ import UpdateAccountPage from "./pages/UpdateAccountPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
-import OrderHistoryPage from "./pages/OrderHistoryPage.jsx"; // <-- IMPORT TRANG LỊCH SỬ ĐƠN HÀNG
+import OrderHistoryPage from "./pages/OrderHistoryPage.jsx";
 import OrderDetailPage from "./pages/OrderDetailPage.jsx";
+import AboutPage from "./pages/AboutPage.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
+
 
 function App() {
   return (
@@ -47,6 +50,8 @@ function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
 
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
 
         {/* --- Account Routes (Protected) --- */}
         <Route
@@ -82,7 +87,7 @@ function App() {
             </ProtectedRoute>
           } />
         <Route
-          path="/account/orders/:status" // :status sẽ là pending, shipping, cancelled, all
+          path="/account/orders/:status"
           element={
             <ProtectedRoute roleRequired="USER">
               <OrderHistoryPage />
@@ -118,6 +123,7 @@ function App() {
         <Route path="suppliers" element={<SupplierPage />} />
         <Route path="discounts" element={<DiscountPage />} />
         <Route path="orders" element={<OrderPage />} />
+        <Route path="shop-info" element={<ShopInformationManaging />} />
       </Route>
 
       {/* <Route path="*" element={<NotFoundPage />} /> */}
