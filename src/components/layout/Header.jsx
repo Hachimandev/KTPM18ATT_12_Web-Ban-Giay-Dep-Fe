@@ -5,6 +5,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
 import { useCart } from "../../contexts/CartContext.jsx";
 import ShopGiayLogo from "../common/ShopGiayLogo.jsx";
+
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,6 +19,8 @@ const Header = () => {
     { name: "Giày Nữ", href: "/products/giay-nu" },
     { name: "Dép", href: "/products/dep" },
     { name: "Khuyến Mãi", href: "/products/khuyen-mai", special: true },
+    { name: "Thông Tin", href: "/about" },
+    { name: "Liên Hệ", href: "/contact" },
   ];
 
   const handleSearch = (e) => {
