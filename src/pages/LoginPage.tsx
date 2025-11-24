@@ -13,6 +13,7 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import shop from "../assets/image/shop.png";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { useCart } from "../contexts/CartContext";
 
 const LoginPage = () => {
@@ -59,6 +60,51 @@ const LoginPage = () => {
       alert("Có lỗi khi kết nối server!");
     }
     setLoading(false);
+  };
+
+  // --- Google login with id_token ---
+  const handleGoogleSuccess = async (
+    credentialResponse: CredentialResponse
+  ) => {
+    if (!credentialResponse.credential) {
+      alert("Login Google thất bại!");
+      return;
+    }
+
+    try {
+      const backendRes = await fetch(
+        "http://localhost:8085/api/auth/login-google",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken: credentialResponse.credential }),
+        }
+      );
+
+      if (!backendRes.ok) throw new Error("Login Google thất bại");
+
+      const data = await backendRes.json();
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("roles", JSON.stringify(data.roles || []));
+
+      setCartUsername(data.username);
+      const saved = localStorage.getItem(`cart_${data.username}`);
+      if (saved) setCart(JSON.parse(saved));
+      else setCart({ items: [], maKhuyenMai: null, diemSuDung: 0 });
+
+      alert("Đăng nhập Google thành công!");
+      if (data.roles && data.roles.includes("ROLE_ADMIN")) navigate("/admin");
+      else navigate("/");
+    } catch (err) {
+      console.error(err);
+      alert("Đăng nhập Google thất bại!");
+    }
+  };
+
+  const handleGoogleError = () => {
+    alert("Đăng nhập Google thất bại!");
   };
 
   return (
@@ -206,7 +252,10 @@ const LoginPage = () => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <SocialButton icon={<FcGoogle size={22} />} text="Google" />
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                />
                 <SocialButton
                   icon={<FaFacebook size={22} className="text-blue-600" />}
                   text="Facebook"
@@ -234,9 +283,10 @@ const InfoBox = ({ icon, title, description }) => (
 );
 
 // Các props {icon, text} sẽ không còn bị báo lỗi
-const SocialButton = ({ icon, text }) => (
+const SocialButton = ({ icon, text, onClick }) => (
   <button
     type="button"
+    onClick={onClick}
     className="flex items-center justify-center gap-3 w-full border border-gray-300 rounded-lg py-3 px-4 hover:bg-gray-50 transition-colors"
   >
     {icon}
