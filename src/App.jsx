@@ -95,6 +95,7 @@ function App() {
           }
         />
 
+
         {/* ROUTE CHECKOUT (Protected) */}
         <Route
           path="/checkout"
