@@ -1,39 +1,21 @@
+// src/components/admin/RecentOrders.jsx
 // @ts-nocheck
 import { Link } from 'react-router-dom';
+import StatusBadge from '../admin/widgets/StatusBadge'; // Giả định bạn có component StatusBadge
 
-const orders = [
-    { id: '#DH001', customer: 'Nguyễn Văn A', product: 'Nike Air Max 270', total: '2,890,000 VNĐ', status: 'Hoàn thành', date: '19/10/2024' },
-    { id: '#DH002', customer: 'Trần Thị B', product: 'Adidas Ultraboost', total: '3,200,000 VNĐ', status: 'Đang xử lý', date: '19/10/2024' },
-    { id: '#DH003', customer: 'Lê Văn C', product: 'Converse Chuck Taylor', total: '1,590,000 VNĐ', status: 'Đang giao', date: '18/10/2024' },
-    { id: '#DH004', customer: 'Phạm Hữu D', product: 'Vans Old Skool', total: '1,750,000 VNĐ', status: 'Đã hủy', date: '17/10/2024' },
-];
+// Sửa component để nhận orders qua props
+const RecentOrders = ({ orders }) => {
 
-const StatusBadge = ({ status }) => {
-    let colorClasses = '';
-    switch (status) {
-        case 'Hoàn thành':
-            colorClasses = 'bg-green-100 text-green-700';
-            break;
-        case 'Đang xử lý':
-            colorClasses = 'bg-yellow-100 text-yellow-700';
-            break;
-        case 'Đang giao':
-            colorClasses = 'bg-blue-100 text-blue-700';
-            break;
-        case 'Đã hủy':
-            colorClasses = 'bg-red-100 text-red-700';
-            break;
-        default:
-            colorClasses = 'bg-gray-100 text-gray-700';
-    }
-    return (
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${colorClasses}`}>
-            {status}
-        </span>
-    );
-};
+    // StatusBadge logic (Cần đảm bảo component này nhận được ENUM status)
+    const statusMap = {
+        CHO_XAC_NHAN: "Chờ xác nhận",
+        DANG_GIAO: "Đang giao",
+        DA_GIAO: "Đã giao",
+        DA_HUY: "Đã hủy",
+        TRA_HANG: "Trả hàng",
+        CHO_HUY: "Yêu cầu hủy",
+    };
 
-const RecentOrders = () => {
     return (
         <div>
             <div className="flex justify-between items-center mb-4">
@@ -43,34 +25,39 @@ const RecentOrders = () => {
                     Xem tất cả
                 </Link>
             </div>
-            <div className="overflow-x-auto">
-                <table className="w-full min-w-max">
-                    <thead>
-                        <tr className="text-left text-sm text-gray-500 border-b">
-                            <th className="py-3 px-4">Mã đơn</th>
-                            <th className="py-3 px-4">Khách hàng</th>
-                            <th className="py-3 px-4">Sản phẩm (1)</th>
-                            <th className="py-3 px-4">Tổng tiền</th>
-                            <th className="py-3 px-4">Trạng thái</th>
-                            <th className="py-3 px-4">Ngày tạo</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                        {orders.map((order) => (
-                            <tr key={order.id} className="text-gray-700">
-                                <td className="py-3 px-4 font-medium">{order.id}</td>
-                                <td className="py-3 px-4">{order.customer}</td>
-                                <td className="py-3 px-4">{order.product}</td>
-                                <td className="py-3 px-4">{order.total}</td>
-                                <td className="py-3 px-4">
-                                    <StatusBadge status={order.status} />
-                                </td>
-                                <td className="py-3 px-4 text-sm text-gray-500">{order.date}</td>
+
+            {orders.length === 0 ? (
+                <div className="text-gray-500 p-4 border rounded-lg text-center">Không có đơn hàng gần đây nào.</div>
+            ) : (
+                <div className="overflow-x-auto">
+                    <table className="w-full min-w-max">
+                        <thead>
+                            <tr className="text-left text-sm text-gray-500 border-b">
+                                <th className="py-3 px-4">Mã đơn</th>
+                                <th className="py-3 px-4">Khách hàng</th>
+                                <th className="py-3 px-4">Tổng tiền</th>
+                                <th className="py-3 px-4">Trạng thái</th>
+                                <th className="py-3 px-4">Ngày tạo</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody className="divide-y">
+                            {orders.map((order) => (
+                                <tr key={order.maHoaDon} className="text-gray-700 hover:bg-gray-50 transition">
+                                    <td className="py-3 px-4 font-medium">{order.maHoaDon}</td>
+                                    {/* Giả định order.khachHang có trường hoTen */}
+                                    <td className="py-3 px-4">{order.khachHang?.hoTen || 'Khách lẻ'}</td>
+                                    <td className="py-3 px-4">{order.thanhTien?.toLocaleString('vi-VN') + ' VNĐ'}</td>
+                                    <td className="py-3 px-4">
+                                        {/* Dùng StatusBadge với ENUM status */}
+                                        <StatusBadge status={statusMap[order.trangThaiHoaDon]} />
+                                    </td>
+                                    <td className="py-3 px-4 text-sm text-gray-500">{new Date(order.ngayDat).toLocaleDateString('vi-VN')}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 };

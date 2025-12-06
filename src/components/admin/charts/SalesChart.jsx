@@ -1,3 +1,4 @@
+// src/components/admin/charts/SalesChart.jsx
 // @ts-nocheck
 import {
     Chart as ChartJS,
@@ -21,58 +22,66 @@ ChartJS.register(
     Legend
 );
 
-const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-const data = {
-    labels,
-    datasets: [
-        {
-            label: 'Doanh thu (triệu VNĐ)',
-            data: [150, 240, 200, 320, 300, 400, 350, 410, 380, 450, 430, 480],
-            borderColor: '#F97316',
-            backgroundColor: 'rgba(249, 115, 22, 0.2)',
-            fill: false,
-            tension: 0.3,
-            pointBackgroundColor: '#F97316',
-            pointBorderColor: '#fff',
-            pointHoverRadius: 7,
-        },
-    ],
-};
-
-const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-        legend: {
-            position: 'top',
-            align: 'end',
-        },
-        title: {
-            display: true,
-            text: 'Doanh thu theo tháng',
-            align: 'start',
-            font: {
-                size: 18,
-                weight: 'bold',
+// Sửa component để nhận chartData qua props
+const SalesChart = ({ chartData }) => {
+    // Sử dụng data từ props thay vì hardcode
+    const data = {
+        labels: chartData.labels,
+        datasets: [
+            {
+                label: 'Doanh thu (VNĐ)',
+                data: chartData.data,
+                borderColor: '#F97316',
+                backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                fill: false,
+                tension: 0.3,
+                pointBackgroundColor: '#F97316',
+                pointBorderColor: '#fff',
+                pointHoverRadius: 7,
             },
-            padding: {
-                bottom: 20,
-            }
-        },
-    },
-    scales: {
-        y: {
-            beginAtZero: true,
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                align: 'end',
+            },
             title: {
                 display: true,
-                text: 'Doanh thu (triệu VNĐ)',
+                text: 'Doanh thu theo tháng',
+                align: 'start',
+                font: {
+                    size: 18,
+                    weight: 'bold',
+                },
+                padding: {
+                    bottom: 20,
+                }
             },
         },
-    },
-};
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Doanh thu (VNĐ)',
+                },
+                // Thêm callback để định dạng tiền tệ trên trục Y
+                ticks: {
+                    callback: function (value, index, values) {
+                        return (value / 1000000).toLocaleString('vi-VN') + ' tr';
+                    }
+                }
+            },
+        },
+    };
 
-const SalesChart = () => {
+    if (!chartData.labels || chartData.labels.length === 0) return <div className="text-center p-4">Không có dữ liệu doanh thu.</div>;
+
     return (
         <div style={{ height: '350px' }}>
             <Line options={options} data={data} />
