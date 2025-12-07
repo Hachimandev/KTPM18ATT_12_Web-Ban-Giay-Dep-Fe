@@ -6,7 +6,7 @@ import { Link, useLocation } from "react-router-dom";
 
 // @ts-nocheck
 import * as api from "../api/api";
-import productImageMap from '../constants/productImages';
+import productImageMap from "../constants/productImages";
 
 const PRICE_RANGES = [
   { label: "Dưới 500.000đ", min: 0, max: 500000 },
@@ -17,11 +17,23 @@ const PRICE_RANGES = [
 const BRANDS = ["Nike", "Adidas", "Converse", "Vans"];
 const SIZES = [36, 37, 38, 39, 40, 41, 42, 43];
 
+const getProductImage = (hinhAnh, ten = "SP", size = 400) => {
+  if (!hinhAnh) {
+    return `https://placehold.co/${size}x${size}?text=${ten.substring(0, 3)}`;
+  }
+
+  if (hinhAnh.startsWith("http")) return hinhAnh;
+
+  return (
+    productImageMap[hinhAnh] ||
+    `https://placehold.co/${size}x${size}?text=${ten.substring(0, 3)}`
+  );
+};
 
 export default function ProductListPage({ category = "all" }) {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const queryTerm = searchParams.get('q') || '';
+  const queryTerm = searchParams.get("q") || "";
 
   const [sort, setSort] = useState("newest");
   const [products, setProducts] = useState([]);
@@ -34,10 +46,10 @@ export default function ProductListPage({ category = "all" }) {
   });
 
   const handleFilterChange = (type, value) => {
-    setFilters(prev => {
+    setFilters((prev) => {
       const current = prev[type];
       if (current.includes(value)) {
-        return { ...prev, [type]: current.filter(v => v !== value) };
+        return { ...prev, [type]: current.filter((v) => v !== value) };
       } else {
         return { ...prev, [type]: [...current, value] };
       }
@@ -45,30 +57,31 @@ export default function ProductListPage({ category = "all" }) {
   };
 
   const handlePriceChange = (index) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       priceIndex: prev.priceIndex === index ? null : index,
     }));
   };
 
-
   const filteredProducts = useMemo(() => {
     let result = Array.isArray(products) ? products : [];
 
     if (filters.brand.length > 0) {
-      result = result.filter(p => filters.brand.includes(p.thuongHieu));
+      result = result.filter((p) => filters.brand.includes(p.thuongHieu));
     }
     if (filters.size.length > 0) {
-      result = result.filter(p => {
-        const sizeStrings = filters.size.map(s => String(s));
+      result = result.filter((p) => {
+        const sizeStrings = filters.size.map((s) => String(s));
         if (!p.chiTietSanPhams) return false;
-        return p.chiTietSanPhams.some(ct => sizeStrings.includes(String(ct.size)));
+        return p.chiTietSanPhams.some((ct) =>
+          sizeStrings.includes(String(ct.size))
+        );
       });
     }
 
-    if (sort === 'price_low') {
+    if (sort === "price_low") {
       result.sort((a, b) => a.giaBan - b.giaBan);
-    } else if (sort === 'price_high') {
+    } else if (sort === "price_high") {
       result.sort((a, b) => b.giaBan - a.giaBan);
     }
 
@@ -79,28 +92,29 @@ export default function ProductListPage({ category = "all" }) {
     setLoading(true);
     const query = new URLSearchParams();
 
-    if (queryTerm) query.append('searchTerm', queryTerm);
-    if (category && category !== 'all') query.append('category', category);
+    if (queryTerm) query.append("searchTerm", queryTerm);
+    if (category && category !== "all") query.append("category", category);
 
     if (filters.priceIndex !== null) {
       const range = PRICE_RANGES[filters.priceIndex];
-      query.append('minPrice', range.min);
+      query.append("minPrice", range.min);
       if (range.max !== 50000000) {
-        query.append('maxPrice', range.max);
+        query.append("maxPrice", range.max);
       }
     }
-    filters.brand.forEach(b => query.append('brand', b));
-    filters.size.forEach(s => query.append('sizes', s));
+    filters.brand.forEach((b) => query.append("brand", b));
+    filters.size.forEach((s) => query.append("sizes", s));
 
-    if (sort !== 'newest') query.append('sort', sort);
+    if (sort !== "newest") query.append("sort", sort);
 
     const queryString = query.toString();
 
-    api.get(`/products${queryString ? '?' + queryString : ''}`)
-      .then(res => {
+    api
+      .get(`/products${queryString ? "?" + queryString : ""}`)
+      .then((res) => {
         setProducts(Array.isArray(res) ? res : []);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Lỗi khi fetch sản phẩm:", error);
       })
       .finally(() => {
@@ -112,7 +126,6 @@ export default function ProductListPage({ category = "all" }) {
     fetchProducts();
   }, [queryTerm, category, filters, sort]);
 
-
   return (
     <div className="flex gap-6 p-6 bg-gray-50 min-h-screen">
       {/* Sidebar */}
@@ -123,7 +136,10 @@ export default function ProductListPage({ category = "all" }) {
         <div className="mb-4 border-b pb-4">
           <h4 className="font-semibold mb-2 text-gray-700">Khoảng giá</h4>
           {PRICE_RANGES.map((range, index) => (
-            <label className="block text-sm mb-1 text-gray-600 hover:text-black cursor-pointer" key={index}>
+            <label
+              className="block text-sm mb-1 text-gray-600 hover:text-black cursor-pointer"
+              key={index}
+            >
               <input
                 type="checkbox"
                 className="mr-2 rounded text-orange-500 focus:ring-orange-500"
@@ -131,7 +147,8 @@ export default function ProductListPage({ category = "all" }) {
                 name="price_range"
                 checked={filters.priceIndex === index}
                 onChange={() => handlePriceChange(index)}
-              /> {range.label}
+              />{" "}
+              {range.label}
             </label>
           ))}
         </div>
@@ -140,15 +157,19 @@ export default function ProductListPage({ category = "all" }) {
         <div className="mb-4 border-b pb-4">
           <h4 className="font-semibold mb-2 text-gray-700">Thương hiệu</h4>
           {BRANDS.map((b) => (
-            <label className="block text-sm mb-1 text-gray-600 hover:text-black cursor-pointer" key={b}>
+            <label
+              className="block text-sm mb-1 text-gray-600 hover:text-black cursor-pointer"
+              key={b}
+            >
               <input
                 type="checkbox"
                 className="mr-2 rounded text-orange-500 focus:ring-orange-500"
                 id={`brand-filter-${b}`}
                 name="brand_filter"
                 checked={filters.brand.includes(b)}
-                onChange={() => handleFilterChange('brand', b)}
-              /> {b}
+                onChange={() => handleFilterChange("brand", b)}
+              />{" "}
+              {b}
             </label>
           ))}
         </div>
@@ -161,8 +182,12 @@ export default function ProductListPage({ category = "all" }) {
               <button
                 key={s}
                 className={`border p-1 rounded text-sm transition duration-150 
-                            ${filters.size.includes(s) ? 'bg-black text-white' : 'bg-white hover:bg-gray-200 text-gray-700'}`}
-                onClick={() => handleFilterChange('size', s)}
+                            ${
+                              filters.size.includes(s)
+                                ? "bg-black text-white"
+                                : "bg-white hover:bg-gray-200 text-gray-700"
+                            }`}
+                onClick={() => handleFilterChange("size", s)}
               >
                 {s}
               </button>
@@ -171,7 +196,7 @@ export default function ProductListPage({ category = "all" }) {
         </div>
 
         <button
-          onClick={() => console.log('Áp dụng filters:', filters)} // Giả lập nút áp dụng
+          onClick={() => console.log("Áp dụng filters:", filters)} // Giả lập nút áp dụng
           className="w-full bg-orange-500 text-white py-2 rounded-lg mt-2 font-semibold hover:bg-orange-600 transition-colors"
         >
           Áp dụng bộ lọc ({filteredProducts.length})
@@ -182,9 +207,17 @@ export default function ProductListPage({ category = "all" }) {
       <div className="flex-1">
         <div className="flex justify-between items-center mb-4">
           <p className="text-gray-600">
-            {queryTerm && <span className="font-semibold text-black">Kết quả tìm kiếm cho: "{queryTerm}"</span>}
-            {filteredProducts.length > 0 && <span>Hiển thị {filteredProducts.length} sản phẩm</span>}
-            {filteredProducts.length === 0 && !loading && <span>Không tìm thấy sản phẩm phù hợp.</span>}
+            {queryTerm && (
+              <span className="font-semibold text-black">
+                Kết quả tìm kiếm cho: "{queryTerm}"
+              </span>
+            )}
+            {filteredProducts.length > 0 && (
+              <span>Hiển thị {filteredProducts.length} sản phẩm</span>
+            )}
+            {filteredProducts.length === 0 && !loading && (
+              <span>Không tìm thấy sản phẩm phù hợp.</span>
+            )}
           </p>
           <select
             value={sort}
@@ -198,26 +231,33 @@ export default function ProductListPage({ category = "all" }) {
         </div>
 
         {loading ? (
-          <div className="text-center p-10 text-xl text-gray-600">Đang tải sản phẩm...</div>
+          <div className="text-center p-10 text-xl text-gray-600">
+            Đang tải sản phẩm...
+          </div>
         ) : (
           <div className="grid grid-cols-3 gap-4">
             {filteredProducts.map((p) => (
-              <Link to={`/product/${p.maSanPham}`} key={p.maSanPham || p.maSanPham}>
+              <Link
+                to={`/product/${p.maSanPham}`}
+                key={p.maSanPham || p.maSanPham}
+              >
                 <div className="bg-white p-3 rounded-2xl shadow hover:shadow-lg transition">
                   <div className="relative">
-                    {(p.thue > 0) && (
+                    {p.thue > 0 && (
                       <span className="absolute top-2 left-2 text-xs px-2 py-1 rounded text-white bg-red-500 font-semibold">
                         -{Math.round(p.thue * 100)}%
                       </span>
                     )}
                     <img
-                      src={productImageMap[p.hinhAnh] || 'https://placehold.co/400x400?text=No+Image'}
+                      src={getProductImage(p.hinhAnh, p.tenSanPham, 400)}
                       alt={p.tenSanPham}
                       className="w-full h-40 object-cover rounded-lg"
                     />
                   </div>
                   <h3 className="font-semibold mt-2 text-lg">{p.tenSanPham}</h3>
-                  <p className="text-gray-500 text-sm mb-1">{p.loaiSanPham?.tenLoai}</p>
+                  <p className="text-gray-500 text-sm mb-1">
+                    {p.loaiSanPham?.tenLoai}
+                  </p>
                   <p className="text-orange-600 font-bold text-lg">
                     {p.giaBan.toLocaleString()}đ
                   </p>
