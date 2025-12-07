@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { FiPlus, FiTrash2 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const AddProductPage = () => {
+const ProductFormPage = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEdit = Boolean(id);
 
   const [categories, setCategories] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
@@ -32,6 +34,35 @@ const AddProductPage = () => {
     });
   };
 
+  useEffect(() => {
+    if (!isEdit) return;
+
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`http://localhost:8085/api/products/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (!res.ok) throw new Error("Không lấy được sản phẩm");
+
+        const data = await res.json();
+
+        setForm({
+          ...data,
+          loaiSanPham: { maLoai: data.loaiSanPham?.maLoai || "" },
+          nhaCungCap: { maNhaCungCap: data.nhaCungCap?.maNhaCungCap || "" },
+          chiTietSanPhams: data.chiTietSanPhams || [],
+        });
+      } catch (err) {
+        console.error(err);
+        alert("Lỗi khi tải sản phẩm");
+      }
+    };
+
+    fetchProduct();
+  }, [id, isEdit]);
+
   const uploadImageToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -55,8 +86,14 @@ const AddProductPage = () => {
 
   const handleSubmit = async () => {
     try {
-      const res = await fetch("http://localhost:8085/api/products", {
-        method: "POST",
+      const url = isEdit
+        ? `http://localhost:8085/api/products/${id}`
+        : "http://localhost:8085/api/products";
+
+      const method = isEdit ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -64,13 +101,15 @@ const AddProductPage = () => {
         body: JSON.stringify(form),
       });
 
-      if (!res.ok) throw new Error("Thêm sản phẩm thất bại");
+      if (!res.ok) throw new Error("Lưu sản phẩm thất bại");
 
-      alert("Thêm sản phẩm thành công");
+      alert(
+        isEdit ? "Cập nhật sản phẩm thành công" : "Thêm sản phẩm thành công"
+      );
       navigate("/admin/products");
     } catch (err) {
       console.error(err);
-      alert("Lỗi khi thêm sản phẩm");
+      alert("Lỗi khi lưu sản phẩm");
     }
   };
 
@@ -98,7 +137,9 @@ const AddProductPage = () => {
   }, []);
   return (
     <div className="bg-white p-6 rounded-lg shadow space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800">Thêm sản phẩm</h2>
+      <h2 className="text-2xl font-bold text-gray-800">
+        {isEdit ? "Cập nhật sản phẩm" : "Thêm sản phẩm"}
+      </h2>
 
       {/* ===== Thông tin sản phẩm ===== */}
       <div className="grid grid-cols-2 gap-4">
@@ -192,6 +233,8 @@ const AddProductPage = () => {
         />
       </div>
       <textarea
+        value={form.moTa}
+        onChange={(e) => setForm({ ...form, moTa: e.target.value })}
         className="w-full border rounded-lg p-3"
         placeholder="Mô tả sản phẩm"
         rows={3}
@@ -324,11 +367,11 @@ const AddProductPage = () => {
           onClick={handleSubmit}
           className="px-6 py-2 bg-orange-500 text-white rounded-lg"
         >
-          Lưu sản phẩm
+          {isEdit ? "Cập nhật" : "Lưu sản phẩm"}
         </button>
       </div>
     </div>
   );
 };
 
-export default AddProductPage;
+export default ProductFormPage;

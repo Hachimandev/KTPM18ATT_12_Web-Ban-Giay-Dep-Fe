@@ -70,6 +70,29 @@ const ProductsPage = () => {
     fetchProducts();
   }, []);
 
+  // delete
+  const handleDelete = async (id) => {
+    if (!window.confirm("Bạn có chắc muốn xóa sản phẩm này?")) return;
+
+    try {
+      const res = await fetch(`http://localhost:8085/api/products/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Xóa sản phẩm thất bại");
+
+      // ✅ Cập nhật UI ngay lập tức
+      setProducts(products.filter((p) => p.maSanPham !== id));
+      alert("Xóa sản phẩm thành công");
+    } catch (err) {
+      console.error(err);
+      alert("Không thể xóa sản phẩm");
+    }
+  };
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
@@ -255,10 +278,20 @@ const ProductsPage = () => {
                           <button className="text-blue-600">
                             <FiEye />
                           </button>
-                          <button className="text-green-600">
+                          <button
+                            onClick={() =>
+                              navigate(
+                                `/admin/products/edit/${product.maSanPham}`
+                              )
+                            }
+                            className="text-green-600 hover:text-green-800"
+                          >
                             <FiEdit2 />
                           </button>
-                          <button className="text-red-600">
+                          <button
+                            onClick={() => handleDelete(product.maSanPham)}
+                            className="text-red-600 hover:text-red-800"
+                          >
                             <FiTrash2 />
                           </button>
                         </div>

@@ -29,7 +29,7 @@ import OrderHistoryPage from "./pages/OrderHistoryPage.jsx";
 import OrderDetailPage from "./pages/OrderDetailPage.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
-import AddProductPage from "./pages/admin/AddProductPage.jsx";
+import ProductFormPage from "./pages/admin/ProductFormPage.jsx";
 function App() {
   return (
     <Routes>
@@ -132,7 +132,8 @@ function App() {
         <Route index element={<DashboardPage />} />
         <Route path="products">
           <Route index element={<ProductsPage />} />
-          <Route path="add" element={<AddProductPage />} />
+          <Route path="add" element={<ProductFormPage />} />
+          <Route path="edit/:id" element={<ProductFormPage />} />
         </Route>
         <Route path="staff" element={<StaffPage />} />
         <Route path="customers" element={<CustomerPage />} />
