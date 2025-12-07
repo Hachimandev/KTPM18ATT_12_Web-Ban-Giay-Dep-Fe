@@ -1,117 +1,177 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import * as api from "../api/api";
 
 export const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
 
+const SHIPPING_FEE = 30000;
+const MAX_POINT_DISCOUNT = 10000;
+
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState({
-    items: [],
-    maKhuyenMai: null,
-    diemSuDung: 0,
+  const [khuyenMaiInfo, setKhuyenMaiInfo] = useState(null);
+  const [danhSachKM, setDanhSachKM] = useState([]);
+  const [diemTichLuy, setDiemTichLuy] = useState(0);
+  const usernameFromStorage = localStorage.getItem("username");
+
+  const [username, setUsername] = useState(usernameFromStorage);
+
+  const [cart, setCart] = useState(() => {
+    if (!usernameFromStorage)
+      return { items: [], maKhuyenMai: null, diemSuDung: 0 };
+    const saved = localStorage.getItem(`cart_${usernameFromStorage}`);
+    return saved
+      ? JSON.parse(saved)
+      : { items: [], maKhuyenMai: null, diemSuDung: 0 };
   });
 
-  const [username, setUsername] = useState(null);
-
-  useEffect(() => {
-    const user = localStorage.getItem("username");
-    if (user) setUsername(user);
-  }, []);
-
+  // --- Lấy dữ liệu khởi tạo ---
   useEffect(() => {
     if (!username) return;
-    const cartKey = `cart_${username}`;
-    const storedCart = localStorage.getItem(cartKey);
-    if (storedCart) setCart(JSON.parse(storedCart));
+
+    // Lấy điểm khách hàng
+    api
+      .get(`/khachhang/diem/${username}`)
+      .then(setDiemTichLuy)
+      .catch((err) => console.error("Lỗi khi lấy điểm tích lũy:", err));
+
+    // Lấy danh sách khuyến mãi
+    api
+      .get("/khuyenmai")
+      .then(setDanhSachKM)
+      .catch((err) => console.error("Lỗi khi lấy danh sách khuyến mãi:", err));
+
+    // Load giỏ hàng từ localStorage
+    const saved = localStorage.getItem(`cart_${username}`);
+    if (saved) setCart(JSON.parse(saved));
   }, [username]);
 
+  // --- Lưu giỏ hàng ---
   useEffect(() => {
-    if (!username) return;
-    const cartKey = `cart_${username}`;
-    localStorage.setItem(cartKey, JSON.stringify(cart));
+    if (username)
+      localStorage.setItem(`cart_${username}`, JSON.stringify(cart));
   }, [cart, username]);
 
-  // --- Thêm sản phẩm ---
+  // --- Tính toán tổng ---
+  const calculateTotals = (cart, kmInfo) => {
+    const subtotal = cart.items.reduce(
+      (sum, i) => sum + i.giaBan * i.soLuong,
+      0
+    );
+    const giamGiaKM = kmInfo?.chietKhau ? subtotal * kmInfo.chietKhau : 0;
+    const diemTienMat = Math.min(
+      cart.diemSuDung,
+      diemTichLuy,
+      MAX_POINT_DISCOUNT
+    );
+    const total = Math.max(
+      subtotal + SHIPPING_FEE - giamGiaKM - diemTienMat,
+      0
+    );
+    return { subtotal, giamGiaKM, diemTienMat, total };
+  };
+
+  // --- Các hành động chính ---
   const addItem = (product, qty, size, color) => {
     setCart((prev) => {
       const existing = prev.items.find(
-        (item) =>
-          item.maChiTiet === product.maChiTiet &&
-          item.size === size &&
-          item.color === color
+        (i) =>
+          i.maChiTiet === product.maChiTiet &&
+          i.size === size &&
+          i.color === color
       );
-      let newItems;
+      let items;
       if (existing) {
-        newItems = prev.items.map((item) =>
-          item === existing ? { ...item, soLuong: item.soLuong + qty } : item
+        items = prev.items.map((i) =>
+          i === existing ? { ...i, soLuong: i.soLuong + qty } : i
         );
       } else {
-        newItems = [...prev.items, { ...product, soLuong: qty, size, color }];
+        const hinhAnh =
+          product.hinhAnh || product.imageURL || "/default-shoe.png";
+        items = [
+          ...prev.items,
+          { ...product, soLuong: qty, size, color, hinhAnh },
+        ];
       }
-      return { ...prev, items: newItems };
+      return { ...prev, items };
     });
   };
 
-  // --- Xóa sản phẩm ---
-  const removeItem = (maChiTiet, size, color) => {
+  const removeItem = (maChiTiet, size, color) =>
     setCart((prev) => ({
       ...prev,
       items: prev.items.filter(
-        (item) =>
-          !(
-            item.maChiTiet === maChiTiet &&
-            item.size === size &&
-            item.color === color
-          )
+        (i) =>
+          !(i.maChiTiet === maChiTiet && i.size === size && i.color === color)
       ),
     }));
-  };
 
-  // --- Cập nhật số lượng ---
-  const updateQuantity = (maChiTiet, qty, size, color) => {
+  const updateQuantity = (maChiTiet, qty, size, color) =>
     setCart((prev) => ({
       ...prev,
-      items: prev.items.map((item) =>
-        item.maChiTiet === maChiTiet &&
-        item.size === size &&
-        item.color === color
-          ? { ...item, soLuong: qty }
-          : item
+      items: prev.items.map((i) =>
+        i.maChiTiet === maChiTiet && i.size === size && i.color === color
+          ? { ...i, soLuong: qty }
+          : i
       ),
     }));
-  };
 
-  // --- Xóa toàn bộ giỏ hàng ---
-  const clearCart = () => {
+  const clearCart = () =>
     setCart({ items: [], maKhuyenMai: null, diemSuDung: 0 });
+
+  const applyPromo = async (maKhuyenMai) => {
+    if (!maKhuyenMai) {
+      setKhuyenMaiInfo(null);
+      setCart((prev) => ({ ...prev, maKhuyenMai: null }));
+      return;
+    }
+    try {
+      const km = await api.get(`/khuyenmai/${maKhuyenMai}`);
+      if (km) {
+        setKhuyenMaiInfo(km);
+        setCart((prev) => ({ ...prev, maKhuyenMai }));
+      } else {
+        alert("Mã khuyến mãi không hợp lệ hoặc đã hết hạn.");
+        setKhuyenMaiInfo(null);
+        setCart((prev) => ({ ...prev, maKhuyenMai: null }));
+      }
+    } catch (err) {
+      console.error("Lỗi khi áp dụng khuyến mãi:", err);
+      alert("Mã khuyến mãi không tồn tại.");
+      setKhuyenMaiInfo(null);
+      setCart((prev) => ({ ...prev, maKhuyenMai: null }));
+    }
   };
 
-  // --- Áp dụng mã khuyến mãi ---
-  const applyPromo = (maKhuyenMai) => {
-    setCart((prev) => ({ ...prev, maKhuyenMai }));
-  };
-
-  // --- Sử dụng điểm tích lũy ---
   const usePoints = (diem) => {
-    setCart((prev) => ({ ...prev, diemSuDung: diem }));
+    const diemHopLe = Math.min(diem, diemTichLuy, MAX_POINT_DISCOUNT);
+    setCart((prev) => ({ ...prev, diemSuDung: diemHopLe }));
   };
 
-  // --- Tính tổng tiền ---
-  const totalPrice = cart.items?.reduce(
-    (sum, item) => sum + item.giaBan * item.soLuong,
-    0
+  const { subtotal, giamGiaKM, diemTienMat, total } = calculateTotals(
+    cart,
+    khuyenMaiInfo
   );
 
   return (
     <CartContext.Provider
       value={{
         cart,
+        danhSachKM,
         addItem,
         removeItem,
         updateQuantity,
         clearCart,
         applyPromo,
         usePoints,
-        totalPrice,
+        subtotal,
+        total,
+        giamGiaKM,
+        diemTienMat,
+        phiVanChuyen: SHIPPING_FEE,
+        diemKhachHang: diemTichLuy,
+        username,
+        setUsername,
+        setCart,
       }}
     >
       {children}

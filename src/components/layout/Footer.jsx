@@ -1,4 +1,3 @@
-// src/components/layout/Footer.jsx
 import {
   FiFacebook,
   FiInstagram,
@@ -8,6 +7,7 @@ import {
   FiMapPin,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import ShopGiayLogo from "../common/ShopGiayLogo";
 
 const Footer = () => {
   return (
@@ -15,9 +15,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-2xl font-bold text-brand-orange mb-4">
-              ShopGiay
-            </h3>
+            <ShopGiayLogo size="text-2xl" color="text-white" />
             <p className="mb-4">
               Cửa hàng giày dép thời trang hàng đầu Việt Nam
             </p>

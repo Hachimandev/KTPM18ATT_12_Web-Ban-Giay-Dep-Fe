@@ -4,6 +4,8 @@ import { FiMenu, FiSearch, FiShoppingCart, FiX } from "react-icons/fi";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
 import { useCart } from "../../contexts/CartContext.jsx";
+import ShopGiayLogo from "../common/ShopGiayLogo.jsx";
+
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,6 +19,8 @@ const Header = () => {
     { name: "Giày Nữ", href: "/products/giay-nu" },
     { name: "Dép", href: "/products/dep" },
     { name: "Khuyến Mãi", href: "/products/khuyen-mai", special: true },
+    { name: "Thông Tin", href: "/about" },
+    { name: "Liên Hệ", href: "/contact" },
   ];
 
   const handleSearch = (e) => {
@@ -32,7 +36,7 @@ const Header = () => {
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link to="/" className="text-2xl font-bold text-orange-500">
-          ShopGiay
+          <ShopGiayLogo size="text-2xl" color="text-black" />
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">
@@ -42,16 +46,14 @@ const Header = () => {
               to={link.href}
               className={({ isActive }) => `
                                 pb-1
-                                ${
-                                  isActive
-                                    ? "text-orange-500 border-b-2 border-orange-500"
-                                    : "text-gray-600 hover:text-orange-500"
-                                }
-                                ${
-                                  link.special
-                                    ? "text-red-500 font-semibold"
-                                    : ""
-                                }
+                                ${isActive
+                  ? "text-orange-500 border-b-2 border-orange-500"
+                  : "text-gray-600 hover:text-orange-500"
+                }
+                                ${link.special
+                  ? "text-red-500 font-semibold"
+                  : ""
+                }
                             `}
             >
               {link.name}
@@ -83,7 +85,7 @@ const Header = () => {
           >
             <FiShoppingCart size={24} />
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              {cart.items.reduce((total, item) => total + item.soLuong, 0)}
+              {cart.items.length}
             </span>
           </Link>
           {token ? (
@@ -147,16 +149,14 @@ const Header = () => {
                 to={link.href}
                 className={({ isActive }) => `
                                     p-2 rounded
-                                    ${
-                                      isActive
-                                        ? "bg-orange-100 text-orange-500"
-                                        : "text-gray-700"
-                                    }
-                                    ${
-                                      link.special
-                                        ? "text-red-500 font-semibold"
-                                        : ""
-                                    }
+                                    ${isActive
+                    ? "bg-orange-100 text-orange-500"
+                    : "text-gray-700"
+                  }
+                                    ${link.special
+                    ? "text-red-500 font-semibold"
+                    : ""
+                  }
                                 `}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
