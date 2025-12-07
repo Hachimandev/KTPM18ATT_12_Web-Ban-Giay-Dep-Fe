@@ -29,8 +29,7 @@ import OrderHistoryPage from "./pages/OrderHistoryPage.jsx";
 import OrderDetailPage from "./pages/OrderDetailPage.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
-
-
+import ProductFormPage from "./pages/admin/ProductFormPage.jsx";
 function App() {
   return (
     <Routes>
@@ -41,10 +40,22 @@ function App() {
 
         {/* --- Product Listing Routes --- */}
         <Route path="/search" element={<ProductListPage category="all" />} />
-        <Route path="/products/giay-nam" element={<ProductListPage category="men" />} />
-        <Route path="/products/giay-nu" element={<ProductListPage category="women" />} />
-        <Route path="/products/dep" element={<ProductListPage category="sandals" />} />
-        <Route path="/products/khuyen-mai" element={<ProductListPage category="sale" />} />
+        <Route
+          path="/products/giay-nam"
+          element={<ProductListPage category="men" />}
+        />
+        <Route
+          path="/products/giay-nu"
+          element={<ProductListPage category="women" />}
+        />
+        <Route
+          path="/products/dep"
+          element={<ProductListPage category="sandals" />}
+        />
+        <Route
+          path="/products/khuyen-mai"
+          element={<ProductListPage category="sale" />}
+        />
         <Route path="/product/:id" element={<ProductDetail />} />
 
         <Route path="/cart" element={<CartPage />} />
@@ -76,16 +87,19 @@ function App() {
           path="/account/orders"
           element={
             <ProtectedRoute roleRequired="USER">
-              <OrderHistoryPage status="all" /> {/* Mặc định: Hiển thị tất cả */}
+              <OrderHistoryPage status="all" />{" "}
+              {/* Mặc định: Hiển thị tất cả */}
             </ProtectedRoute>
           }
         />
-        <Route path="/account/order/:maHoaDon"
+        <Route
+          path="/account/order/:maHoaDon"
           element={
             <ProtectedRoute roleRequired="USER">
               <OrderDetailPage status="all" />
             </ProtectedRoute>
-          } />
+          }
+        />
         <Route
           path="/account/orders/:status"
           element={
@@ -94,7 +108,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
 
         {/* ROUTE CHECKOUT (Protected) */}
         <Route
@@ -105,7 +118,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
       </Route>
 
       {/* --- Admin Routes --- */}
@@ -118,7 +130,11 @@ function App() {
         }
       >
         <Route index element={<DashboardPage />} />
-        <Route path="products" element={<ProductsPage />} />
+        <Route path="products">
+          <Route index element={<ProductsPage />} />
+          <Route path="add" element={<ProductFormPage />} />
+          <Route path="edit/:id" element={<ProductFormPage />} />
+        </Route>
         <Route path="staff" element={<StaffPage />} />
         <Route path="customers" element={<CustomerPage />} />
         <Route path="suppliers" element={<SupplierPage />} />

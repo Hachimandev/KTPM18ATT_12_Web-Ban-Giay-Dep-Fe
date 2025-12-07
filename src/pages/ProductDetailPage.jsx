@@ -4,7 +4,20 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { get } from "../api/api";
 import { useCart } from "../contexts/CartContext";
 import productImageMap from "../constants/productImages";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
+
+const getProductImage = (hinhAnh, ten = "SP", size = 400) => {
+  if (!hinhAnh) {
+    return `https://placehold.co/${size}x${size}?text=${ten.substring(0, 3)}`;
+  }
+
+  if (hinhAnh.startsWith("http")) return hinhAnh;
+
+  return (
+    productImageMap[hinhAnh] ||
+    `https://placehold.co/${size}x${size}?text=${ten.substring(0, 3)}`
+  );
+};
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -22,14 +35,20 @@ export default function ProductDetail() {
 
   const processAddToCart = (shouldNavigate = false) => {
     if (!size || !color) {
-      toast.error("Vui lòng chọn Kích thước và Màu sắc.", { position: 'bottom-center' });
+      toast.error("Vui lòng chọn Kích thước và Màu sắc.", {
+        position: "bottom-center",
+      });
       return false;
     }
 
-    const selectedDetail = productDetails.find(d => d.size === size && d.mau === color);
+    const selectedDetail = productDetails.find(
+      (d) => d.size === size && d.mau === color
+    );
 
     if (!selectedDetail || selectedDetail.soLuongTonKho === 0) {
-      toast.error("Sản phẩm này đã hết hàng hoặc không tồn tại.", { position: 'bottom-center' });
+      toast.error("Sản phẩm này đã hết hàng hoặc không tồn tại.", {
+        position: "bottom-center",
+      });
       return false;
     }
 
@@ -49,7 +68,10 @@ export default function ProductDetail() {
     );
 
     if (!shouldNavigate) {
-      toast.success(`Đã thêm ${qty} ${product.tenSanPham} vào giỏ hàng!`, { duration: 2000, icon: '🛒' });
+      toast.success(`Đã thêm ${qty} ${product.tenSanPham} vào giỏ hàng!`, {
+        duration: 2000,
+        icon: "🛒",
+      });
     }
 
     return true;
@@ -84,7 +106,7 @@ export default function ProductDetail() {
         setProductDetails(details);
 
         if (details.length > 0) {
-          const firstAvailable = details.find(d => d.soLuongTonKho > 0);
+          const firstAvailable = details.find((d) => d.soLuongTonKho > 0);
           if (firstAvailable) {
             setSize(firstAvailable.size);
             setColor(firstAvailable.mau);
@@ -93,7 +115,6 @@ export default function ProductDetail() {
             setColor(details[0].mau);
           }
         }
-
       } catch (error) {
         console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
       } finally {
@@ -139,9 +160,9 @@ export default function ProductDetail() {
           related.length > 0
             ? related
             : data
-              .filter((p) => p.maSanPham !== product.maSanPham)
-              .sort(() => Math.random() - 0.5)
-              .slice(0, 4);
+                .filter((p) => p.maSanPham !== product.maSanPham)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 4);
 
         setRelatedProducts(fallback.slice(0, 4));
       } catch (error) {
@@ -154,9 +175,7 @@ export default function ProductDetail() {
   if (loading) return <div className="p-4">Đang tải...</div>;
   if (!product) return <div className="p-4">Sản phẩm không tồn tại.</div>;
 
-  const mainImg =
-    productImageMap[product.hinhAnh] ||
-    "https://placehold.co/400x400?text=No+Image";
+  const mainImg = getProductImage(product.hinhAnh, product.tenSanPham, 400);
 
   const sizes = [...new Set(productDetails.map((d) => d.size))];
   const colors = [...new Set(productDetails.map((d) => d.mau))];
@@ -201,8 +220,9 @@ export default function ProductDetail() {
                   <button
                     key={s}
                     onClick={() => setSize(s)}
-                    className={`px-4 py-2 rounded-lg border ${size === s ? "border-black font-bold" : "text-gray-600"
-                      }`}
+                    className={`px-4 py-2 rounded-lg border ${
+                      size === s ? "border-black font-bold" : "text-gray-600"
+                    }`}
                   >
                     {s}
                   </button>
@@ -220,8 +240,9 @@ export default function ProductDetail() {
                   <button
                     key={c}
                     onClick={() => setColor(c)}
-                    className={`w-7 h-7 rounded-full border-2 ${color === c ? "border-black" : "border-gray-300"
-                      }`}
+                    className={`w-7 h-7 rounded-full border-2 ${
+                      color === c ? "border-black" : "border-gray-300"
+                    }`}
                     style={{ backgroundColor: c }}
                   />
                 ))}
@@ -259,7 +280,7 @@ export default function ProductDetail() {
             disabled={!size || !color}
           >
             <ShoppingCart size={20} />
-            {stock === 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
+            {stock === 0 ? "Hết hàng" : "Thêm vào giỏ hàng"}
           </button>
 
           <button
