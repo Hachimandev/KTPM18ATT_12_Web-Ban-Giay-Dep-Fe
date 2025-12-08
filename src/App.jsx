@@ -30,6 +30,7 @@ import OrderDetailPage from "./pages/OrderDetailPage.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import ProductFormPage from "./pages/admin/ProductFormPage.jsx";
+import ChatbotPage from "./pages/ChatbotPage.js";
 function App() {
   return (
     <Routes>
@@ -118,6 +119,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/chatbot" element={<ChatbotPage />} />
       </Route>
 
       {/* --- Admin Routes --- */}

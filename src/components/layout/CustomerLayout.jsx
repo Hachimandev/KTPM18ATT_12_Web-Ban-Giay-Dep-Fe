@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../layout/Header';
 import Footer from '../layout/Footer';
+import FloatingChatbot from '../common/FloatingChatbot';
 
 const CustomerLayout = () => {
     return (
@@ -10,6 +11,7 @@ const CustomerLayout = () => {
                 <Outlet />
             </main>
             <Footer />
+            <FloatingChatbot />
         </div>
     );
 };
