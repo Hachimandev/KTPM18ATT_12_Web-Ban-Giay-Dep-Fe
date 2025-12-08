@@ -5,6 +5,7 @@ import { get } from "../api/api";
 import { useCart } from "../contexts/CartContext";
 import productImageMap from "../constants/productImages";
 import toast, { Toaster } from "react-hot-toast";
+import ProductReviews from "../components/common/ProductReviews";
 
 const getProductImage = (hinhAnh, ten = "SP", size = 400) => {
   if (!hinhAnh) {
@@ -316,6 +317,8 @@ export default function ProductDetail() {
           </li>
         </ul>
       </div>
+
+      <ProductReviews maSanPham={id} />
 
       {/* --- Sản phẩm liên quan --- */}
       <div className="mt-12">
