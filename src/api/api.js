@@ -1,7 +1,9 @@
 const API_BASE_URL = "/api";
 
-async function handleResponse(response) {
+// 💡 CẬP NHẬT: Thêm tham số isFileDownload để xử lý Blob
+async function handleResponse(response, isFileDownload = false) {
   if (!response.ok) {
+    // Đọc response dưới dạng text (thường là JSON lỗi hoặc chuỗi lỗi)
     const errorText = await response.text();
     console.error("Lỗi API:", errorText);
     throw new Error(errorText || "Đã xảy ra lỗi không xác định");
@@ -11,15 +13,28 @@ async function handleResponse(response) {
     return null;
   }
 
+  // 💡 LOGIC MỚI: Nếu là tải file, trả về Blob
+  if (isFileDownload) {
+    return response.blob();
+  }
+
+  // Mặc định: Trả về JSON (Dùng cho mọi GET, POST, PUT, DELETE thông thường)
   return response.json();
 }
 
 /**
  * Hàm GET chung
  * @param {string} endpoint Ví dụ: "/products", "/products/123"
+ * @param {object} options Tùy chọn (ví dụ: { isFileDownload: true })
  */
-export const get = (endpoint) => {
-  return fetch(`${API_BASE_URL}${endpoint}`).then(handleResponse);
+export const get = (endpoint, options = {}) => {
+  const fetchOptions = { method: "GET", ...options };
+  // Truyền cờ isFileDownload từ options vào handleResponse
+  const isFileDownload = options.isFileDownload || false;
+
+  return fetch(`${API_BASE_URL}${endpoint}`, fetchOptions).then((response) =>
+    handleResponse(response, isFileDownload)
+  );
 };
 
 /**
@@ -34,7 +49,7 @@ export const post = (endpoint, data) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).then(handleResponse);
+  }).then((response) => handleResponse(response, false)); // Luôn là false cho POST
 };
 
 /**
@@ -49,7 +64,7 @@ export const put = (endpoint, data) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).then(handleResponse);
+  }).then((response) => handleResponse(response, false));
 };
 
 /**
@@ -59,5 +74,5 @@ export const put = (endpoint, data) => {
 export const remove = (endpoint) => {
   return fetch(`${API_BASE_URL}${endpoint}`, {
     method: "DELETE",
-  }).then(handleResponse);
+  }).then((response) => handleResponse(response, false));
 };

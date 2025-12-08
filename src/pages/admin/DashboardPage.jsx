@@ -2,12 +2,13 @@
 import { useEffect, useState } from 'react';
 import * as api from '../../api/api';
 import {
-    FiDollarSign, FiShoppingCart, FiPackage, FiUsers
+    FiDollarSign, FiShoppingCart, FiPackage, FiUsers, FiFileText
 } from 'react-icons/fi';
 import StatCard from '../../components/admin/StatCard';
 import SalesChart from '../../components/admin/charts/SalesChart';
 import CategoryChart from '../../components/admin/charts/CategoryChart';
 import RecentOrders from '../../components/admin/RecentOrders';
+import toast, { Toaster } from 'react-hot-toast';
 
 const DashboardPage = () => {
     const [stats, setStats] = useState({
@@ -82,6 +83,29 @@ const DashboardPage = () => {
         loadData();
     }, []);
 
+    const handleExportReport = async () => {
+        toast.loading("Đang tạo và tải báo cáo chi tiết...", { id: 'export_loading' });
+        try {
+            const blob = await api.get('/stats/export/comprehensive-stats', { isFileDownload: true });
+
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+
+            link.setAttribute('download', `bao_cao_doanh_thu_${new Date().toISOString().slice(0, 10)}.xlsx`);
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+            toast.success("Đã tải báo cáo thành công!", { id: 'export_loading' });
+        } catch (error) {
+            console.error("Lỗi khi xuất báo cáo:", error);
+            toast.error(`Xuất báo cáo thất bại: ${error.message || 'Lỗi server.'}`, { id: 'export_loading' });
+        }
+    };
+
     if (loading) {
         return <div className="text-center py-10 text-xl text-gray-500">Đang tải dữ liệu Dashboard...</div>;
     }
@@ -93,7 +117,19 @@ const DashboardPage = () => {
 
     return (
         <div className="space-y-8">
+            <Toaster position="top-left" />
             {/* --- 1. Stat Cards --- */}
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold text-gray-800">Tổng quan Dashboard</h1>
+                <div className="flex gap-4">
+                    <button
+                        onClick={handleExportReport}
+                        className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
+                    >
+                        <FiDollarSign className="mr-2" /> Xuất Excel
+                    </button>
+                </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
                     title="Tổng doanh thu"

@@ -56,12 +56,12 @@ const AccountPage = () => {
       statusKey: "DA_HUY",
       color: "text-red-600"
     },
-    {
-      name: "Sản phẩm yêu thích",
-      icon: <FiHeart />,
-      path: "/account/favorites",
-      color: "text-pink-600"
-    },
+    // {
+    //   name: "Sản phẩm yêu thích",
+    //   icon: <FiHeart />,
+    //   path: "/account/favorites",
+    //   color: "text-pink-600"
+    // },
   ];
 
   useEffect(() => {

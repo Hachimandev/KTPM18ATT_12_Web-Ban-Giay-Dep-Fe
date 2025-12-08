@@ -53,8 +53,10 @@ const OrderDetailPage = () => {
 
   useEffect(() => {
     setLoading(true);
+
+    const username = localStorage.getItem("username");
     api
-      .get(`/hoadon/${maHoaDon}`)
+      .get(`/hoadon/customer/${maHoaDon}?username=${username}`)
       .then((data) => setOrder(data))
       .catch((err) => console.error("Lỗi tải chi tiết đơn hàng:", err))
       .finally(() => setLoading(false));
