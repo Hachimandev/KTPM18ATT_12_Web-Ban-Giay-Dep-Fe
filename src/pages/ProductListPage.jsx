@@ -30,7 +30,7 @@ const getProductImage = (hinhAnh, ten = "SP", size = 400) => {
   );
 };
 
-export default function ProductListPage({ category = "all" }) {
+export default function ProductListPage({ category = "all", gender = null }) {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const queryTerm = searchParams.get("q") || "";
@@ -94,6 +94,7 @@ export default function ProductListPage({ category = "all" }) {
 
     if (queryTerm) query.append("searchTerm", queryTerm);
     if (category && category !== "all") query.append("category", category);
+    if (gender) query.append("gender", gender);
 
     if (filters.priceIndex !== null) {
       const range = PRICE_RANGES[filters.priceIndex];
@@ -124,7 +125,7 @@ export default function ProductListPage({ category = "all" }) {
 
   useEffect(() => {
     fetchProducts();
-  }, [queryTerm, category, filters, sort]);
+  }, [queryTerm, category, gender, filters, sort]);
 
   return (
     <div className="flex gap-6 p-6 bg-gray-50 min-h-screen">
@@ -182,11 +183,10 @@ export default function ProductListPage({ category = "all" }) {
               <button
                 key={s}
                 className={`border p-1 rounded text-sm transition duration-150 
-                            ${
-                              filters.size.includes(s)
-                                ? "bg-black text-white"
-                                : "bg-white hover:bg-gray-200 text-gray-700"
-                            }`}
+                            ${filters.size.includes(s)
+                    ? "bg-black text-white"
+                    : "bg-white hover:bg-gray-200 text-gray-700"
+                  }`}
                 onClick={() => handleFilterChange("size", s)}
               >
                 {s}
