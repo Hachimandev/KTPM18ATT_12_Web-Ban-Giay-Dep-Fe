@@ -12,7 +12,8 @@ import OrderPage from "./pages/admin/OrderPage.jsx";
 import ProductsPage from "./pages/admin/ProductsPage.jsx";
 import ShopInformationManaging from "./pages/admin/ShopInformationManaging.jsx";
 import StaffPage from "./pages/admin/StaffPage.jsx";
-import SupplierFormPage from "./pages/admin/SupplierFormPage.jsx";
+import StaffFormPage from "./pages/admin/StaffFormPage.jsx";
+
 import SupplierPage from "./pages/admin/SupplierPage.jsx";
 
 // Customer Pages
@@ -44,11 +45,11 @@ function App() {
         <Route path="/search" element={<ProductListPage category="all" />} />
         <Route
           path="/products/giay-nam"
-          element={<ProductListPage gender="Nam" />}
+          element={<ProductListPage category="men" />}
         />
         <Route
           path="/products/giay-nu"
-          element={<ProductListPage gender="Nu" />}
+          element={<ProductListPage category="women" />}
         />
         <Route
           path="/products/dep"
@@ -139,7 +140,9 @@ function App() {
           <Route path="add" element={<ProductFormPage />} />
           <Route path="edit/:id" element={<ProductFormPage />} />
         </Route>
-        <Route path="staff" element={<StaffPage />} />
+        <Route path="staffs" element={<StaffPage />} />
+        <Route path="staffs/add" element={<StaffFormPage />} />
+        <Route path="staffs/edit/:id" element={<StaffFormPage />} />
         <Route path="customers" element={<CustomerPage />} />
         <Route path="suppliers">
           <Route index element={<SupplierPage />} />
