@@ -11,6 +11,7 @@ import DiscountPage from "./pages/admin/DiscountPage.jsx";
 import OrderPage from "./pages/admin/OrderPage.jsx";
 import ProductsPage from "./pages/admin/ProductsPage.jsx";
 import StaffPage from "./pages/admin/StaffPage.jsx";
+import StaffFormPage from "./pages/admin/StaffFormPage.jsx";
 import SupplierPage from "./pages/admin/SupplierPage.jsx";
 import ShopInformationManaging from "./pages/admin/ShopInformationManaging.jsx";
 
@@ -135,7 +136,9 @@ function App() {
           <Route path="add" element={<ProductFormPage />} />
           <Route path="edit/:id" element={<ProductFormPage />} />
         </Route>
-        <Route path="staff" element={<StaffPage />} />
+        <Route path="staffs" element={<StaffPage />} />
+        <Route path="staffs/add" element={<StaffFormPage />} />
+        <Route path="staffs/edit/:id" element={<StaffFormPage />} />
         <Route path="customers" element={<CustomerPage />} />
         <Route path="suppliers" element={<SupplierPage />} />
         <Route path="discounts" element={<DiscountPage />} />

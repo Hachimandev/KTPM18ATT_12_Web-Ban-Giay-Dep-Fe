@@ -15,6 +15,7 @@ import { FaFacebook } from "react-icons/fa";
 import shop from "../assets/image/shop.png";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { useCart } from "../contexts/CartContext";
+import toast, { Toaster } from "react-hot-toast";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const LoginPage = () => {
       });
 
       if (!res.ok) {
-        alert("Tên đăng nhập hoặc mật khẩu không đúng!");
+        toast.error("Tên đăng nhập hoặc mật khẩu không đúng!");
         setLoading(false);
         return;
       }
@@ -47,17 +48,16 @@ const LoginPage = () => {
       localStorage.setItem("username", data.username);
       localStorage.setItem("roles", JSON.stringify(data.roles || []));
 
-      // --- quan trọng: cập nhật username cho CartProvider ---
       setCartUsername(data.username);
       const saved = localStorage.getItem(`cart_${data.username}`);
       if (saved) setCart(JSON.parse(saved));
       else setCart({ items: [], maKhuyenMai: null, diemSuDung: 0 });
-      alert("Đăng nhập thành công!");
+      toast.success("Đăng nhập thành công!");
       if (data.roles && data.roles.includes("ROLE_ADMIN")) navigate("/admin");
       else navigate("/");
     } catch (err) {
       console.error("Login error:", err);
-      alert("Có lỗi khi kết nối server!");
+      toast.error("Có lỗi khi kết nối server!");
     }
     setLoading(false);
   };
@@ -67,7 +67,7 @@ const LoginPage = () => {
     credentialResponse: CredentialResponse
   ) => {
     if (!credentialResponse.credential) {
-      alert("Login Google thất bại!");
+      toast.error("Login Google thất bại!");
       return;
     }
 
@@ -93,22 +93,22 @@ const LoginPage = () => {
       const saved = localStorage.getItem(`cart_${data.username}`);
       if (saved) setCart(JSON.parse(saved));
       else setCart({ items: [], maKhuyenMai: null, diemSuDung: 0 });
-
-      alert("Đăng nhập Google thành công!");
+      toast.success("Đăng nhập Google thành công!");
       if (data.roles && data.roles.includes("ROLE_ADMIN")) navigate("/admin");
       else navigate("/");
     } catch (err) {
       console.error(err);
-      alert("Đăng nhập Google thất bại!");
+      toast.error("Đăng nhập Google thất bại!");
     }
   };
 
   const handleGoogleError = () => {
-    alert("Đăng nhập Google thất bại!");
+    toast.error("Đăng nhập Google thất bại!");
   };
 
   return (
     <div className="bg-gradient-to-r from-[#111827] to-[#1F2937] text-white min-h-full py-16 px-4">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="flex flex-col gap-8">

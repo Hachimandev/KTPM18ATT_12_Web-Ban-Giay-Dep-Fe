@@ -37,7 +37,7 @@ const Sidebar = () => {
           text="Sản phẩm"
           to="/admin/products"
         />
-        <SidebarLink icon={<FiUser />} text="Nhân viên" to="/admin/staff" />
+        <SidebarLink icon={<FiUser />} text="Nhân viên" to="/admin/staffs" />
         <SidebarLink
           icon={<FiUsers />}
           text="Khách hàng"
