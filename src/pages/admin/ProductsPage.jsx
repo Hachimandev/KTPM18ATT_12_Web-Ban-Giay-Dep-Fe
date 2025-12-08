@@ -42,7 +42,7 @@ const ProductsPage = () => {
     (p) =>
       p.chiTietSanPhams &&
       p.chiTietSanPhams.reduce((sum, ct) => sum + (ct.soLuongTonKho || 0), 0) >
-        0
+      0
   ).length;
 
   const outOfStockProducts = totalProducts - inStockProducts;
@@ -222,9 +222,9 @@ const ProductsPage = () => {
                 paginatedProducts.map((product) => {
                   const totalStock = product.chiTietSanPhams
                     ? product.chiTietSanPhams.reduce(
-                        (sum, ct) => sum + (ct.soLuongTonKho || 0),
-                        0
-                      )
+                      (sum, ct) => sum + (ct.soLuongTonKho || 0),
+                      0
+                    )
                     : 0;
 
                   return (
@@ -243,7 +243,7 @@ const ProductsPage = () => {
                               product?.hinhAnh?.startsWith("http")
                                 ? product.hinhAnh
                                 : productImageMap[product.hinhAnh] ||
-                                  "https://placehold.co/40"
+                                "https://placehold.co/40"
                             }
                             alt={product.tenSanPham}
                             className="w-10 h-10 rounded-md object-cover"

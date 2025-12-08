@@ -42,11 +42,11 @@ function App() {
         <Route path="/search" element={<ProductListPage category="all" />} />
         <Route
           path="/products/giay-nam"
-          element={<ProductListPage category="men" />}
+          element={<ProductListPage gender="Nam" />}
         />
         <Route
           path="/products/giay-nu"
-          element={<ProductListPage category="women" />}
+          element={<ProductListPage gender="Nu" />}
         />
         <Route
           path="/products/dep"
