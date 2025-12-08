@@ -47,13 +47,16 @@ const ChatbotPage = ({ isFloating = false }) => {
             "Xin lỗi, tôi không thể xử lý yêu cầu này lúc này.",
         },
       ]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Lỗi Chatbot:", error);
-      setMessages((prev) => [
-        ...prev,
-        { sender: "ai", text: "Xin lỗi, có lỗi kết nối đến hệ thống AI." },
-      ]);
-      toast.error("Có lỗi xảy ra khi kết nối AI.");
+
+      const message =
+        error?.response?.data?.error ||
+        "Hệ thống AI đang bận. Vui lòng thử lại sau.";
+
+      setMessages((prev) => [...prev, { sender: "ai", text: message }]);
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
