@@ -14,23 +14,25 @@ import StaffPage from "./pages/admin/StaffPage.jsx";
 import StaffFormPage from "./pages/admin/StaffFormPage.jsx";
 import SupplierPage from "./pages/admin/SupplierPage.jsx";
 import ShopInformationManaging from "./pages/admin/ShopInformationManaging.jsx";
+import SupplierFormPage from "./pages/admin/SupplierFormPage.jsx";
 
 // Customer Pages
+import AboutPage from "./pages/AboutPage.jsx";
+import AccountPage from "./pages/AccountPage.jsx";
+import CartPage from "./pages/CartPage.jsx";
+import CheckoutPage from "./pages/CheckoutPage.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
+import OrderDetailPage from "./pages/OrderDetailPage.jsx";
+import OrderHistoryPage from "./pages/OrderHistoryPage.jsx";
+import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
 import ProductDetail from "./pages/ProductDetailPage.jsx";
 import ProductListPage from "./pages/ProductListPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
-import AccountPage from "./pages/AccountPage.jsx";
 import UpdateAccountPage from "./pages/UpdateAccountPage.jsx";
-import CartPage from "./pages/CartPage.jsx";
-import CheckoutPage from "./pages/CheckoutPage.jsx";
-import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
-import OrderHistoryPage from "./pages/OrderHistoryPage.jsx";
-import OrderDetailPage from "./pages/OrderDetailPage.jsx";
-import AboutPage from "./pages/AboutPage.jsx";
-import ContactPage from "./pages/ContactPage.jsx";
 import ProductFormPage from "./pages/admin/ProductFormPage.jsx";
+import ChatbotPage from "./pages/ChatbotPage.js";
 function App() {
   return (
     <Routes>
@@ -119,6 +121,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/chatbot" element={<ChatbotPage />} />
       </Route>
 
       {/* --- Admin Routes --- */}
@@ -140,7 +144,11 @@ function App() {
         <Route path="staffs/add" element={<StaffFormPage />} />
         <Route path="staffs/edit/:id" element={<StaffFormPage />} />
         <Route path="customers" element={<CustomerPage />} />
-        <Route path="suppliers" element={<SupplierPage />} />
+        <Route path="suppliers">
+          <Route index element={<SupplierPage />} />
+          <Route path="add" element={<SupplierFormPage />} />
+          <Route path="edit/:id" element={<SupplierFormPage />} />
+        </Route>
         <Route path="discounts" element={<DiscountPage />} />
         <Route path="orders" element={<OrderPage />} />
         <Route path="shop-info" element={<ShopInformationManaging />} />
