@@ -10,11 +10,11 @@ import DashboardPage from "./pages/admin/DashboardPage.jsx";
 import DiscountPage from "./pages/admin/DiscountPage.jsx";
 import OrderPage from "./pages/admin/OrderPage.jsx";
 import ProductsPage from "./pages/admin/ProductsPage.jsx";
+import ShopInformationManaging from "./pages/admin/ShopInformationManaging.jsx";
 import StaffPage from "./pages/admin/StaffPage.jsx";
 import StaffFormPage from "./pages/admin/StaffFormPage.jsx";
+
 import SupplierPage from "./pages/admin/SupplierPage.jsx";
-import ShopInformationManaging from "./pages/admin/ShopInformationManaging.jsx";
-import SupplierFormPage from "./pages/admin/SupplierFormPage.jsx";
 
 // Customer Pages
 import AboutPage from "./pages/AboutPage.jsx";
