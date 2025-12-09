@@ -1,10 +1,10 @@
 // src/pages/admin/OrderPage.jsx
-import { useEffect, useState, useCallback } from "react";
-import { FiShoppingCart, FiTruck, FiClock, FiDollarSign, FiXCircle, FiInfo } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
+import { FiClock, FiDollarSign, FiDownload, FiInfo, FiShoppingCart, FiTruck, FiXCircle } from "react-icons/fi";
+import * as api from "../../api/api";
 import Pagination from "../../components/admin/widgets/Pagination";
 import StatCardAdmin from "../../components/admin/widgets/StatCardAdmin";
-import * as api from "../../api/api";
-import toast, { Toaster } from 'react-hot-toast';
 
 export default function OrderPage() {
   const [orders, setOrders] = useState([]);
@@ -100,6 +100,27 @@ export default function OrderPage() {
     }
   };
 
+  const handleExportExcel = async () => {
+    try {
+      const res = await api.get("/hoadon/export/excel",{
+        isFileDownload: true
+      });
+      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `HoaDon_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("Xuất Excel thành công!");
+    } catch (err) {
+      console.error("Lỗi xuất Excel:", err);
+      toast.error("Không thể xuất Excel");
+    }
+  };
+
   // --- Effects and Filtering ---
   useEffect(() => {
     fetchOrders();
@@ -174,6 +195,12 @@ export default function OrderPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <button
+          onClick={handleExportExcel}
+          className="border px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-100"
+        >
+          <FiDownload /> Xuất Excel
+        </button>
       </div>
 
       {/* Table */}
