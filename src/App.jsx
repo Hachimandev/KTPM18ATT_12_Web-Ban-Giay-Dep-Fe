@@ -32,6 +32,7 @@ import ProductListPage from "./pages/ProductListPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import UpdateAccountPage from "./pages/UpdateAccountPage.jsx";
 import ProductFormPage from "./pages/admin/ProductFormPage.jsx";
+import SupplierFormPage from "./pages/admin/SupplierFormPage.jsx";
 import ChatbotPage from "./pages/ChatbotPage.js";
 function App() {
   return (
