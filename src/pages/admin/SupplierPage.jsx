@@ -1,10 +1,6 @@
 // @ts-nocheck
 import { useEffect, useState } from "react";
-import {
-  FiDownload,
-  FiEdit2,
-  FiPlus
-} from "react-icons/fi";
+import { FiDownload, FiEdit2, FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/admin/widgets/Pagination";
 
@@ -29,9 +25,11 @@ const SupplierPage = () => {
       try {
         let url = "http://localhost:8085/api/suppliers";
         if (search.trim()) {
-          url = `http://localhost:8085/api/suppliers/search?keyword=${encodeURIComponent(search)}`;
+          url = `http://localhost:8085/api/suppliers/search?keyword=${encodeURIComponent(
+            search
+          )}`;
         }
-        
+
         const res = await fetch(url);
         if (!res.ok) throw new Error("Không thể tải nhà cung cấp");
         const data = await res.json();
@@ -45,7 +43,7 @@ const SupplierPage = () => {
         setLoading(false);
       }
     };
-    
+
     fetchSuppliers();
   }, [search]);
 
@@ -56,14 +54,18 @@ const SupplierPage = () => {
   // Export to Excel
   const handleExportExcel = async () => {
     try {
-      const res = await fetch("http://localhost:8085/api/suppliers/export/excel");
+      const res = await fetch(
+        "http://localhost:8085/api/suppliers/export/excel"
+      );
       if (!res.ok) throw new Error("Xuất Excel thất bại");
-      
+
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `NhaCungCap_${new Date().toISOString().split('T')[0]}.xlsx`;
+      link.download = `NhaCungCap_${
+        new Date().toISOString().split("T")[0]
+      }.xlsx`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -87,6 +89,7 @@ const SupplierPage = () => {
       </p>
 
       {/* Filters */}
+
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
           <input
@@ -140,7 +143,6 @@ const SupplierPage = () => {
               <th className="text-left p-3">Nhà cung cấp</th>
               <th className="text-left p-3">Liên hệ</th>
               <th className="text-left p-3">Địa chỉ</th>
-
               <th className="text-center p-3">Thao tác</th>
             </tr>
           </thead>

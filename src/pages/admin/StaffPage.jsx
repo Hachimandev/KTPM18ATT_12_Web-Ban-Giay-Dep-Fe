@@ -224,7 +224,7 @@ const StaffPage = () => {
                   : "http://localhost:8085/api/staffs/export";
                 window.open(url, "_blank");
               }}
-              className="flex items-center gap-2 px-4 py-2 border rounded-lg text-sm text-gray-600 hover:bg-gray-50"
+              className="flex items-center gap-2 px-4 py-2 border rounded-lg text-sm border-green-500 bg-green-50 text-green-700 hover:bg-green-100"
             >
               <FiUpload size={16} /> Xuất Excel
             </button>
