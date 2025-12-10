@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   FiUser, FiPackage, FiClock, FiXCircle,
-  FiTruck, FiHeart, FiLogOut, FiEdit2
+  FiTruck, FiHeart, FiLogOut, FiEdit2, FiKey
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import * as api from "../api/api";
@@ -80,6 +80,9 @@ const AccountPage = () => {
     window.location.reload();
   };
 
+  const handleChangePassword = () => {
+    navigate("/account/change-password");
+  };
   return (
     <div className="min-h-screen bg-gray-100 p-6 md:p-10">
       <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl p-8">
@@ -101,12 +104,23 @@ const AccountPage = () => {
             </div>
           </div>
 
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-red-500 hover:text-red-700 transition font-medium"
-          >
-            <FiLogOut size={20} /> Đăng xuất
-          </button>
+          <div className="flex flex-col gap-2">
+            {/* Nút Đổi mật khẩu */}
+            <button
+              onClick={handleChangePassword}
+              className="flex items-center gap-2 text-blue-500 hover:text-blue-700 transition font-medium"
+            >
+              <FiKey size={20} /> Đổi mật khẩu
+            </button>
+
+            {/* Nút Đăng xuất */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-red-500 hover:text-red-700 transition font-medium"
+            >
+              <FiLogOut size={20} /> Đăng xuất
+            </button>
+          </div>
         </div>
 
         {/* Menu */}

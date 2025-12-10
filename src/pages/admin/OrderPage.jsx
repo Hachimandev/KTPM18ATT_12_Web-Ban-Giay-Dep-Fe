@@ -12,6 +12,7 @@ export default function OrderPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [loadingCounts, setLoadingCounts] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   const [statusCount, setStatusCount] = useState({
     CHO_XAC_NHAN: 0, DANG_GIAO: 0, DA_GIAO: 0, DA_HUY: 0, TRA_HANG: 0, CHO_HUY: 0
@@ -19,6 +20,7 @@ export default function OrderPage() {
   const ITEMS_PER_PAGE = 10;
 
   const statusMap = {
+    ALL: "Tất cả trạng thái",
     CHO_XAC_NHAN: "Chờ xác nhận",
     DANG_GIAO: "Đang giao",
     DA_GIAO: "Đã giao",
@@ -127,16 +129,20 @@ export default function OrderPage() {
   }, []);
 
   const filteredOrders = orders.filter(
-    (o) =>
-      o.maHoaDon?.toLowerCase().includes(search.toLowerCase()) ||
-      o.khachHang?.hoTen?.toLowerCase().includes(search.toLowerCase())
+    (o) => {
+      const matchesStatus = statusFilter === "ALL" || o.trangThaiHoaDon === statusFilter;
+
+      const matchesSearch = o.maHoaDon?.toLowerCase().includes(search.toLowerCase()) ||
+        o.khachHang?.hoTen?.toLowerCase().includes(search.toLowerCase());
+
+      return matchesStatus && matchesSearch;
+    }
   );
 
   const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
   const startIndex = (page - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
 
-  // Lấy danh sách hóa đơn chỉ trên trang hiện tại
   const ordersToShow = filteredOrders.slice(startIndex, endIndex);
 
   if (loading)
@@ -201,6 +207,20 @@ export default function OrderPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <select
+          value={statusFilter}
+          onChange={(e) => {
+            setStatusFilter(e.target.value);
+            setPage(1);
+          }}
+          className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+        >
+          {Object.entries(statusMap).map(([key, value]) => (
+            <option key={key} value={key}>
+              {value}
+            </option>
+          ))}
+        </select>
         <button
           onClick={handleExportExcel}
           className="border px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-100"
