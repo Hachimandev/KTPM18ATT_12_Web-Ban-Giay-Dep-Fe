@@ -16,8 +16,7 @@ export default function OrderPage() {
   const [statusCount, setStatusCount] = useState({
     CHO_XAC_NHAN: 0, DANG_GIAO: 0, DA_GIAO: 0, DA_HUY: 0, TRA_HANG: 0, CHO_HUY: 0
   });
-
-  const totalPages = 1;
+  const ITEMS_PER_PAGE = 10;
 
   const statusMap = {
     CHO_XAC_NHAN: "Chờ xác nhận",
@@ -102,7 +101,7 @@ export default function OrderPage() {
 
   const handleExportExcel = async () => {
     try {
-      const res = await api.get("/hoadon/export/excel",{
+      const res = await api.get("/hoadon/export/excel", {
         isFileDownload: true
       });
       const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -132,6 +131,13 @@ export default function OrderPage() {
       o.maHoaDon?.toLowerCase().includes(search.toLowerCase()) ||
       o.khachHang?.hoTen?.toLowerCase().includes(search.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
+  const startIndex = (page - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+
+  // Lấy danh sách hóa đơn chỉ trên trang hiện tại
+  const ordersToShow = filteredOrders.slice(startIndex, endIndex);
 
   if (loading)
     return (
@@ -218,7 +224,7 @@ export default function OrderPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((o) => (
+            {ordersToShow.map((o) => (
               <tr key={o.maHoaDon} className="border-b hover:bg-gray-50 text-sm">
                 <td className="p-3 font-medium text-gray-800">{o.maHoaDon}</td>
                 <td className="p-3 text-gray-700">{o.khachHang?.hoTen || "Ẩn danh"}</td>
@@ -246,7 +252,7 @@ export default function OrderPage() {
                                 ? 'bg-orange-100 text-orange-700 border-orange-300 focus:ring-orange-300'
                                 : 'bg-gray-100 text-gray-600 border-gray-300'
                       }
-    `}
+              `}
                     disabled={
                       o.trangThaiHoaDon === 'DA_HUY' ||
                       o.trangThaiHoaDon === 'DA_GIAO' ||
@@ -320,7 +326,7 @@ export default function OrderPage() {
               </tr>
             ))}
 
-            {filteredOrders.length === 0 && (
+            {ordersToShow.length === 0 && (
               <tr>
                 <td
                   colSpan="7"
@@ -336,7 +342,7 @@ export default function OrderPage() {
 
       {/* Pagination */}
       <Pagination
-        infoText={`Hiển thị ${filteredOrders.length} kết quả`}
+        infoText={`Hiển thị ${ordersToShow.length} trên tổng ${filteredOrders.length} kết quả`}
         page={page}
         totalPages={totalPages}
         onPageChange={(p) => setPage(p)}
