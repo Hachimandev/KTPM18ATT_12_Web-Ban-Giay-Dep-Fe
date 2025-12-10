@@ -34,6 +34,8 @@ import UpdateAccountPage from "./pages/UpdateAccountPage.jsx";
 import ProductFormPage from "./pages/admin/ProductFormPage.jsx";
 import SupplierFormPage from "./pages/admin/SupplierFormPage.jsx";
 import ChatbotPage from "./pages/ChatbotPage.js";
+import DiscountFormPage from "./pages/admin/DiscountFormPage.js";
+import ChangePasswordPage from "./pages/ChangePasswordPage.jsx";
 function App() {
   return (
     <Routes>
@@ -122,7 +124,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/account/change-password"
+          element={
+            <ProtectedRoute roleRequired="USER">
+              <ChangePasswordPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/chatbot" element={<ChatbotPage />} />
       </Route>
 
@@ -150,7 +159,12 @@ function App() {
           <Route path="add" element={<SupplierFormPage />} />
           <Route path="edit/:id" element={<SupplierFormPage />} />
         </Route>
-        <Route path="discounts" element={<DiscountPage />} />
+        <Route path="change-password" element={<ChangePasswordPage />} />
+        <Route path="discounts">
+          <Route index element={<DiscountPage />} />
+          <Route path="add" element={<DiscountFormPage />} />
+          <Route path="edit/:maKhuyenMai" element={<DiscountFormPage />} />
+        </Route>
         <Route path="orders" element={<OrderPage />} />
         <Route path="shop-info" element={<ShopInformationManaging />} />
       </Route>
